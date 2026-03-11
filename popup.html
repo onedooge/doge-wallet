@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOGE Wallet</title>
+  <style>
+    :root {
+      --doge-gold: #C8A435;
+      --doge-orange: #F4A820;
+      --doge-bright: #FFD166;
+      --doge-dark: #1A1200;
+      --doge-brown: #3D2800;
+      --doge-tan: #8B6914;
+      --bg-primary: #0F0A00;
+      --bg-card: #1E1500;
+      --bg-input: #2A1D00;
+      --text-primary: #FFE9A0;
+      --text-muted: #A88E50;
+      --success: #4ECDC4;
+      --danger: #FF6B6B;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 380px;
+      min-height: 560px;
+      background: var(--bg-primary);
+      font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      color: var(--text-primary);
+      overflow: hidden;
+    }
+
+    /* Stars background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image:
+        radial-gradient(1px 1px at 20% 15%, rgba(255,220,100,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80% 25%, rgba(255,220,100,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 70%, rgba(255,220,100,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 85%, rgba(255,220,100,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 50%, rgba(255,220,100,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 10% 90%, rgba(255,220,100,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 10%, rgba(255,220,100,0.5) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      padding: 0;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      background: linear-gradient(135deg, #2A1D00 0%, #1A1200 100%);
+      border-bottom: 2px solid var(--doge-gold);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      top: -20px; right: -20px;
+      width: 100px; height: 100px;
+      background: radial-gradient(circle, rgba(200,164,53,0.15) 0%, transparent 70%);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .doge-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--doge-orange), var(--doge-gold));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 0 15px rgba(244,168,32,0.4);
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 15px rgba(244,168,32,0.4); }
+      50% { box-shadow: 0 0 25px rgba(244,168,32,0.7); }
+    }
+
+    .logo-text {
+      font-family: 'Impact', 'Arial Black', sans-serif;
+      font-size: 22px;
+      background: linear-gradient(90deg, var(--doge-bright), var(--doge-orange));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      border: 1px solid rgba(200,164,53,0.3);
+      background: rgba(200,164,53,0.1);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--doge-gold);
+      transition: all 0.2s;
+    }
+    .btn-icon:hover {
+      background: rgba(200,164,53,0.2);
+      border-color: var(--doge-gold);
+    }
+
+    /* ===== PAGES ===== */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ===== SETUP PAGE ===== */
+    .setup-page {
+      padding: 30px 24px;
+      text-align: center;
+    }
+
+    .setup-doge {
+      font-size: 70px;
+      margin-bottom: 10px;
+      animation: bounce 1.5s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .setup-title {
+      font-family: 'Impact', 'Arial Black', sans-serif; letter-spacing: 0.5px;
+      font-size: 26px;
+      color: var(--doge-bright);
+      margin-bottom: 6px;
+    }
+
+    .setup-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .meme-text {
+      background: var(--bg-card);
+      border: 1px solid rgba(200,164,53,0.2);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .meme-text p {
+      font-size: 11px;
+      color: var(--doge-gold);
+      font-weight: 700;
+      margin-bottom: 4px;
+      font-family: 'Impact', 'Arial Black', sans-serif; letter-spacing: 0.5px;
+    }
+
+    .setup-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Impact', 'Arial Black', sans-serif; letter-spacing: 0.5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 10px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--doge-orange), var(--doge-gold));
+      color: var(--doge-dark);
+      box-shadow: 0 4px 20px rgba(244,168,32,0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(244,168,32,0.5);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--doge-gold);
+      border: 1px solid rgba(200,164,53,0.4);
+    }
+    .btn-secondary:hover {
+      background: rgba(200,164,53,0.1);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #c0392b, #e74c3c);
+      color: white;
+      box-shadow: 0 4px 20px rgba(231,76,60,0.3);
+    }
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(231,76,60,0.5);
+    }
+
+    /* ===== PASSWORD PAGE ===== */
+    .form-section {
+      padding: 24px;
+    }
+
+    .form-title {
+      font-family: 'Impact', 'Arial Black', sans-serif; letter-spacing: 0.5px;
+      font-size: 20px;
+      color: var(--doge-bright);
+      margin-bottom: 4px;
+    }
+
+    .form-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-input);
+      border: 1px solid rgba(200,164,53,0.25);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-family: 'Segoe UI', 'PingFang SC', sans-serif;
+      font-size: 13px;
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    .input-field:focus {
+      border-color: var(--doge-gold);
+      box-shadow: 0 0 0 3px rgba(200,164,53,0.15);
+    }
+
+    .input-field::placeholder {
+      color: rgba(168,142,80,0.5);
+    }
+
+    textarea.input-field {
+      resize: vertical;
+      min-height: 80px;
+      font-size: 11px;
+      font-family: 'Courier New', monospace;
+    }
+
+    /* ===== WALLET PAGE ===== */
+    .wallet-page {
+      padding: 0;
+    }
+
+    .balance-card {
+      background: linear-gradient(135deg, #2A1D00 0%, #1A1200 60%, #0F0A00 100%);
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid rgba(200,164,53,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .balance-card::before {
+      content: '🐕';
+      position: absolute;
+      right: -10px;
+      top: -15px;
+      font-size: 80px;
+      opacity: 0.07;
+    }
+
+    .balance-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 6px;
+    }
+
+    .balance-amount {
+      font-family: 'Impact', 'Arial Black', sans-serif; letter-spacing: 0.5px;
+      font-size: 38px;
+      color: var(--doge-bright);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .balance-symbol {
+      font-size: 18px;
+      color: var(--doge-gold);
+    }
+
+    .balance-usd {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .price-ticker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(200,164,53,0.1);
+      border: 1px solid rgba(200,164,53,0.2);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 11px;
+    }
+
+    .price-ticker .price { color: var(--doge-bright); font-weight: 700; }
+    .price-ticker .change { color: #4ECDC4; font-weight: 700; }
+    .price-ticker .change.down { color: var(--danger); }
+
+    .address-strip {
+      padding: 12px 24px;
+      background: var(--bg-card);
+      border-bottom: 1px solid rgba(200,164,53,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .address-text {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .copy-btn {
+      background: rgba(200,164,53,0.15);
+      border: 1px solid rgba(200,164,53,0.3);
+      border-radius: 6px;
+      color: var(--doge-gold);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .copy-btn:hover { background: rgba(200,164,53,0.25); }
+    .copy-btn.copied { color: var(--success); border-color: var(--success); }
+
+    /* Actions */
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 10px;
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(200,164,53,0.15);
+    }
+
+    .action-btn {
+      background: var(--bg-card);
+      border: 1px solid rgba(200,164,53,0.2);
+      border-radius: 12px;
+      padding: 12px 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      color: var(--text-primary);
+    }
+    .action-btn:hover {
+      background: rgba(200,164,53,0.1);
+      border-color: var(--doge-gold);
+      transform: translateY(-2px);
+    }
+
+    .action-btn .icon { font-size: 20px; margin-bottom: 4px; }
+    .action-btn .label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* Transaction list */
+    .tx-section {
+      padding: 16px 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Impact', 'Arial Black', sans-serif; letter-spacing: 0.5px;
+      font-size: 15px;
+      color: var(--doge-gold);
+    }
+
+    .tx-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      background: var(--bg-card);
+      border: 1px solid rgba(200,164,53,0.1);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      transition: all 0.2s;
+    }
+    .tx-item:hover { border-color: rgba(200,164,53,0.3); }
+
+    .tx-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .tx-icon.send { background: rgba(255,107,107,0.15); }
+    .tx-icon.recv { background: rgba(78,205,196,0.15); }
+
+    .tx-info { flex: 1; overflow: hidden; }
+    .tx-type { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+    .tx-addr { font-size: 10px; color: var(--text-muted); font-family: 'Courier New', monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .tx-amount { text-align: right; }
+    .tx-doge { font-size: 12px; font-weight: 800; }
+    .tx-doge.send { color: var(--danger); }
+    .tx-doge.recv { color: var(--success); }
+    .tx-time { font-size: 10px; color: var(--text-muted); }
+
+    /* ===== SEND PAGE ===== */
+    /* ===== RECEIVE PAGE ===== */
+    .qr-container {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      display: inline-block;
+      margin: 0 auto 16px;
+    }
+
+    .qr-placeholder {
+      width: 160px;
+      height: 160px;
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      grid-template-rows: repeat(10, 1fr);
+      gap: 2px;
+    }
+
+    .qr-cell {
+      background: #1A1200;
+      border-radius: 1px;
+    }
+
+    .receive-section {
+      padding: 20px 24px;
+      text-align: center;
+    }
+
+    /* ===== TABS ===== */
+    .tab-bar {
+      display: flex;
+      border-top: 1px solid rgba(200,164,53,0.2);
+      background: var(--bg-card);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      transition: all 0.2s;
+      color: var(--text-muted);
+    }
+    .tab-btn .tab-icon { font-size: 18px; }
+    .tab-btn .tab-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .tab-btn.active { color: var(--doge-gold); }
+    .tab-btn:hover { color: var(--doge-bright); }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--bg-card);
+      border: 1px solid var(--doge-gold);
+      border-radius: 20px;
+      padding: 8px 20px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--doge-bright);
+      opacity: 0;
+      transition: all 0.3s;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 100;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ===== LOADING SPINNER ===== */
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid rgba(200,164,53,0.3);
+      border-top-color: var(--doge-gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .doge-meme-float {
+      position: absolute;
+      font-family: 'Impact', 'Arial Black', sans-serif; letter-spacing: 0.5px;
+      font-size: 11px;
+      opacity: 0.4;
+      pointer-events: none;
+      color: var(--doge-gold);
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--doge-gold);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 12px 24px;
+      border-bottom: 1px solid rgba(200,164,53,0.15);
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      width: 100%;
+      text-align: left;
+    }
+    .back-btn:hover { color: var(--doge-bright); }
+
+    .warning-box {
+      background: rgba(255,107,107,0.1);
+      border: 1px solid rgba(255,107,107,0.3);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 11px;
+      color: #ff9999;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .seed-display {
+      background: var(--bg-input);
+      border: 1px solid rgba(200,164,53,0.3);
+      border-radius: 10px;
+      padding: 14px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--doge-bright);
+      line-height: 1.8;
+      word-break: break-all;
+      text-align: center;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .seed-display:hover {
+      border-color: var(--doge-gold);
+      background: rgba(200,164,53,0.05);
+    }
+
+    .seed-words {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .seed-word {
+      background: var(--bg-input);
+      border: 1px solid rgba(200,164,53,0.2);
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+    }
+    .seed-word .num { font-size: 9px; color: var(--text-muted); }
+    .seed-word .word { font-size: 12px; font-weight: 700; color: var(--doge-bright); font-family: 'Courier New', monospace; }
+
+    .price-loading {
+      opacity: 0.5;
+      font-size: 12px;
+    }
+    /* ===== RED PACKET ===== */
+    .rp-send-wrap { padding: 0 0 20px; }
+
+    .rp-header-art {
+      background: linear-gradient(135deg, #8B0000 0%, #C0392B 40%, #A93226 100%);
+      padding: 24px 20px 20px;
+      text-align: center;
+      border-bottom: 2px solid #FFD700;
+      position: relative;
+      overflow: hidden;
+    }
+    .rp-header-art::before {
+      content: '🐕 🐕 🐕';
+      position: absolute;
+      font-size: 40px;
+      opacity: 0.08;
+      top: 0; left: 0; right: 0;
+      letter-spacing: 30px;
+    }
+    .rp-lantern { font-size: 44px; margin-bottom: 6px; animation: bounce 1.5s ease-in-out infinite; }
+    .rp-title-cn {
+      font-family: 'Impact','Arial Black',sans-serif;
+      font-size: 22px;
+      color: #FFD700;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      margin-bottom: 4px;
+    }
+    .rp-title-sub { font-size: 11px; color: rgba(255,215,0,0.7); }
+
+    .rp-form { padding: 16px 20px 0; }
+
+    .rp-field { margin-bottom: 16px; }
+    .rp-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .rp-input-row { display: flex; align-items: center; gap: 8px; }
+    .rp-unit { font-size: 12px; font-weight: 700; color: var(--doge-gold); }
+    .rp-input {
+      width: 100%;
+      padding: 11px 14px;
+      background: var(--bg-input);
+      border: 1px solid rgba(200,164,53,0.25);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-size: 13px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .rp-input:focus { border-color: var(--doge-gold); box-shadow: 0 0 0 3px rgba(200,164,53,0.15); }
+    .rp-input::placeholder { color: rgba(168,142,80,0.5); }
+
+    .rp-count-btns { display: flex; gap: 8px; }
+    .rp-count-btn {
+      flex: 1;
+      padding: 8px 4px;
+      border: 1px solid rgba(200,164,53,0.25);
+      border-radius: 8px;
+      background: var(--bg-input);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .rp-count-btn.active, .rp-count-btn:hover {
+      background: rgba(139,0,0,0.4);
+      border-color: #C0392B;
+      color: #FFD700;
+    }
+
+    .rp-preview {
+      background: rgba(139,0,0,0.15);
+      border: 1px solid rgba(192,57,43,0.3);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 11px;
+      color: #FFB3A0;
+      margin-bottom: 16px;
+      min-height: 36px;
+    }
+
+    .rp-send-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #8B0000, #C0392B);
+      color: #FFD700;
+      font-size: 16px;
+      font-family: 'Impact','Arial Black',sans-serif;
+      font-weight: normal;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(192,57,43,0.4);
+    }
+    .rp-send-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(192,57,43,0.6); }
+
+    /* Share page */
+    .rp-share-wrap { padding-bottom: 10px; }
+    .rp-share-envelope {
+      background: linear-gradient(160deg, #8B0000, #C0392B);
+      padding: 28px 20px 22px;
+      text-align: center;
+      border-bottom: 2px solid #FFD700;
+    }
+    .rp-share-title {
+      font-family: 'Impact','Arial Black',sans-serif;
+      font-size: 20px;
+      color: #FFD700;
+      margin-bottom: 4px;
+    }
+    .rp-share-sub { font-size: 12px; color: rgba(255,215,0,0.8); }
+
+    .rp-share-info { padding: 14px 20px; }
+    .rp-info-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(200,164,53,0.1);
+      font-size: 12px;
+    }
+    .rp-info-label { color: var(--text-muted); }
+    .rp-info-val { color: var(--text-primary); font-weight: 700; text-align: right; }
+
+    .rp-slot-badge {
+      background: rgba(192,57,43,0.2);
+      border: 1px solid rgba(192,57,43,0.4);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #FFB3A0;
+    }
+    .rp-slot-badge.claimed {
+      background: rgba(78,205,196,0.1);
+      border-color: rgba(78,205,196,0.3);
+      color: var(--success);
+    }
+
+    .rp-share-link-box {
+      margin: 0 20px 14px;
+      background: var(--bg-card);
+      border: 1px solid rgba(200,164,53,0.2);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .rp-link-text {
+      font-family: monospace;
+      font-size: 10px;
+      color: var(--doge-bright);
+      word-break: break-all;
+      line-height: 1.6;
+    }
+    .rp-action-btn {
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #8B0000, #C0392B);
+      color: #FFD700;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .rp-action-btn:hover { opacity: 0.85; }
+    .rp-action-secondary {
+      background: var(--bg-card);
+      color: var(--doge-gold);
+      border: 1px solid rgba(200,164,53,0.3);
+    }
+
+    /* Claim page */
+    .rp-claim-wrap { padding-bottom: 10px; }
+    .rp-claim-envelope {
+      background: linear-gradient(160deg, #6B0000, #A93226);
+      padding: 28px 20px 22px;
+      text-align: center;
+      border-bottom: 2px solid #FFD700;
+    }
+    .rp-claim-doge { font-size: 48px; animation: bounce 1.5s ease-in-out infinite; }
+    .rp-claim-from {
+      font-family: 'Impact','Arial Black',sans-serif;
+      font-size: 16px;
+      color: #FFD700;
+      margin: 6px 0 4px;
+    }
+    .rp-claim-greeting { font-size: 12px; color: rgba(255,215,0,0.8); margin-bottom: 6px; }
+    .rp-claim-meta { font-size: 11px; color: rgba(255,220,150,0.7); }
+
+    .rp-result-card {
+      margin: 14px 20px;
+      background: linear-gradient(135deg, rgba(78,205,196,0.15), rgba(78,205,196,0.05));
+      border: 2px solid var(--success);
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      animation: result-pop 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+    }
+    @keyframes result-pop {
+      from { transform: scale(0.7); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    .rp-result-icon { font-size: 32px; margin-bottom: 6px; }
+    .rp-result-amount {
+      font-family: 'Impact','Arial Black',sans-serif;
+      font-size: 30px;
+      color: var(--success);
+    }
+    .rp-result-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    .rp-claim-slots {
+      padding: 12px 20px 4px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+    }
+    .rp-claim-slot {
+      background: var(--bg-card);
+      border: 1px solid rgba(192,57,43,0.3);
+      border-radius: 8px;
+      padding: 6px 4px;
+      text-align: center;
+      font-size: 10px;
+    }
+    .rp-claim-slot .slot-num { color: var(--text-muted); margin-bottom: 2px; }
+    .rp-claim-slot .slot-amt { color: var(--doge-bright); font-weight: 700; font-size: 11px; }
+    .rp-claim-slot.claimed { border-color: rgba(78,205,196,0.3); }
+    .rp-claim-slot.claimed .slot-amt { color: var(--success); }
+    .rp-claim-slot .slot-who { font-size: 9px; color: var(--text-muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Status page */
+    .rp-status-item {
+      background: var(--bg-card);
+      border: 1px solid rgba(200,164,53,0.15);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .rp-status-num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .rp-status-num.open   { background: rgba(192,57,43,0.25); color: #FFB3A0; }
+    .rp-status-num.taken  { background: rgba(78,205,196,0.2);  color: var(--success); }
+    .rp-status-amt  { font-size: 13px; font-weight: 700; color: var(--doge-bright); }
+    .rp-status-who  { font-size: 10px; color: var(--text-muted); }
+    .rp-status-tag  { margin-left: auto; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 10px; }
+    .rp-status-tag.open  { background: rgba(192,57,43,0.2); color: #FFB3A0; }
+    .rp-status-tag.taken { background: rgba(78,205,196,0.15); color: var(--success); }
+
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER (hidden on setup) -->
+  <div class="header" id="mainHeader" style="display:none">
+    <div class="logo">
+      <div class="doge-icon">🐕</div>
+      <div>
+        <div class="logo-text">DOGE Wallet</div>
+        <div class="logo-sub">Much Crypto. Very Wow.</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-icon" id="refreshBtn" title="刷新">🔄</button>
+      <button class="btn-icon" id="settingsBtn" title="设置">⚙️</button>
+    </div>
+  </div>
+
+  <!-- ======== PAGE: WELCOME ======== -->
+  <div class="page active" id="page-welcome">
+    <div class="setup-page">
+      <div class="setup-doge">🐕</div>
+      <div class="setup-title">欢迎使用 DOGE Wallet!</div>
+      <div class="setup-sub">Much Wow · Very Crypto · So Decentralized</div>
+
+      <div class="meme-text">
+        <p>🌟 wow. such wallet.</p>
+        <p>💰 very dogecoin. much safe.</p>
+        <p>🚀 so moon. many features.</p>
+        <p>✨ amaze. very secure. wow.</p>
+      </div>
+
+      <button class="setup-btn btn-primary" id="btnGoCreate">
+        🆕 创建新钱包
+      </button>
+      <button class="setup-btn btn-secondary" id="btnGoImport">
+        📥 导入已有钱包
+      </button>
+    </div>
+  </div>
+
+  <!-- ======== PAGE: CREATE PASSWORD ======== -->
+  <div class="page" id="page-create-password">
+    <div class="form-section">
+      <div class="form-title">🔐 设置钱包密码</div>
+      <div class="form-sub">密码用于加密本地数据，请牢记！</div>
+
+      <div class="input-group">
+        <label class="input-label">密码</label>
+        <input type="password" class="input-field" id="createPwd" placeholder="至少8位字符..." />
+      </div>
+      <div class="input-group">
+        <label class="input-label">确认密码</label>
+        <input type="password" class="input-field" id="confirmPwd" placeholder="再次输入密码..." />
+      </div>
+
+      <div style="height:8px"></div>
+      <button class="setup-btn btn-primary" id="btnCreateWallet">
+        ✨ 创建钱包
+      </button>
+      <button class="setup-btn btn-secondary" id="btnBackFromCreate">
+        ← 返回
+      </button>
+    </div>
+  </div>
+
+  <!-- ======== PAGE: BACKUP SEED ======== -->
+  <div class="page" id="page-backup">
+    <div class="form-section">
+      <div class="form-title">🌱 备份助记词</div>
+      <div class="form-sub">请将以下12个单词抄写到纸上安全保存！</div>
+
+      <div class="warning-box">
+        ⚠️ <strong>重要！</strong> 助记词是恢复钱包的唯一方式。切勿截图或分享给任何人！
+      </div>
+
+      <div class="seed-words" id="seedWordsDisplay"></div>
+
+      <div style="height:16px"></div>
+      <button class="setup-btn btn-primary" id="btnConfirmBackup">
+        ✅ 我已安全备份
+      </button>
+    </div>
+  </div>
+
+  <!-- ======== PAGE: IMPORT ======== -->
+  <div class="page" id="page-import">
+    <div class="form-section">
+      <div class="form-title">📥 导入钱包</div>
+      <div class="form-sub">输入助记词或私钥来恢复您的钱包</div>
+
+      <div class="input-group">
+        <label class="input-label">助记词 / 私钥</label>
+        <textarea class="input-field" id="importSeed" placeholder="输入12或24个助记词，用空格分隔&#10;或输入WIF格式私钥..."></textarea>
+      </div>
+      <div class="input-group">
+        <label class="input-label">设置新密码</label>
+        <input type="password" class="input-field" id="importPwd" placeholder="设置钱包访问密码..." />
+      </div>
+
+      <button class="setup-btn btn-primary" id="btnImportWallet">
+        📥 导入钱包
+      </button>
+      <button class="setup-btn btn-secondary" id="btnBackFromImport">
+        ← 返回
+      </button>
+    </div>
+  </div>
+
+  <!-- ======== PAGE: UNLOCK ======== -->
+  <div class="page" id="page-unlock">
+    <div class="setup-page">
+      <div class="setup-doge" style="font-size:50px;margin-bottom:16px;">🔐</div>
+      <div class="setup-title">解锁钱包</div>
+      <div class="setup-sub">Much Security. Very Safe. Wow.</div>
+
+      <div class="input-group" style="text-align:left">
+        <label class="input-label">密码</label>
+        <input type="password" class="input-field" id="unlockPwd" placeholder="输入钱包密码..." />
+      </div>
+      <div style="height:8px"></div>
+      <button class="setup-btn btn-primary" id="btnUnlock">
+        🔓 解锁
+      </button>
+      <button class="setup-btn btn-secondary" id="btnResetFromUnlock">
+        🔄 重置钱包
+      </button>
+    </div>
+  </div>
+
+  <!-- ======== PAGE: MAIN WALLET ======== -->
+  <div class="page" id="page-wallet">
+    <div class="wallet-page">
+      <div class="balance-card">
+        <div class="balance-label">总余额</div>
+        <div class="balance-amount">
+          <span id="balanceAmount">0.00</span>
+          <span class="balance-symbol">DOGE</span>
+        </div>
+        <div class="balance-usd">≈ $<span id="balanceUsd">0.00</span> USD</div>
+        <div class="price-ticker">
+          <span>🐕 DOGE</span>
+          <span class="price" id="dogePrice">--</span>
+          <span class="change" id="dogeChange">--</span>
+        </div>
+      </div>
+
+      <div class="address-strip">
+        <span class="address-text" id="walletAddress">加载中...</span>
+        <button class="copy-btn" id="copyAddrBtn">复制</button>
+      </div>
+
+      <div class="action-grid">
+        <div class="action-btn" id="btnGoSend">
+          <div class="icon">📤</div>
+          <div class="label">发送</div>
+        </div>
+        <div class="action-btn" id="btnGoReceive">
+          <div class="icon">📥</div>
+          <div class="label">接收</div>
+        </div>
+        <div class="action-btn" id="btnGoRedPacket">
+          <div class="icon">🧧</div>
+          <div class="label">红包</div>
+        </div>
+        <div class="action-btn" id="btnRefresh">
+          <div class="icon">🔄</div>
+          <div class="label">刷新</div>
+        </div>
+      </div>
+
+      <div class="tx-section">
+        <div class="section-header">
+          <div class="section-title">交易记录</div>
+          <button id="btnGoClaimRP" style="background:rgba(139,0,0,0.25);border:1px solid rgba(192,57,43,0.4);border-radius:8px;color:#FFD700;font-size:10px;font-weight:700;padding:4px 10px;cursor:pointer">🧧 领红包</button>
+        </div>
+        <div id="txList">
+          <div style="text-align:center;padding:20px;color:var(--text-muted);font-size:12px;">
+            🐕 暂无交易记录<br>Such empty. Very quiet. Wow.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== PAGE: SEND ======== -->
+  <div class="page" id="page-send">
+    <button class="back-btn" id="btnBackFromSend">← 返回钱包</button>
+    <div class="form-section">
+      <div class="form-title">📤 发送 DOGE</div>
+      <div class="form-sub">Much Send. Very Transaction. Wow.</div>
+
+      <div class="input-group">
+        <label class="input-label">收款地址</label>
+        <input type="text" class="input-field" id="sendTo" placeholder="D开头的Dogecoin地址..." />
+      </div>
+      <div class="input-group">
+        <label class="input-label">发送数量 (DOGE)</label>
+        <input type="number" class="input-field" id="sendAmount" placeholder="0.00" min="0" step="1" />
+      </div>
+      <div class="input-group">
+        <label class="input-label">网络手续费 (DOGE)</label>
+        <input type="number" class="input-field" id="sendFee" value="1" min="1" step="0.5" />
+      </div>
+
+      <div style="background:var(--bg-card);border:1px solid rgba(200,164,53,0.2);border-radius:10px;padding:12px;margin-bottom:16px;font-size:11px;color:var(--text-muted)">
+        可用余额: <span style="color:var(--doge-bright);font-weight:700" id="sendMaxBalance">0.00</span> DOGE
+      </div>
+
+      <button class="setup-btn btn-primary" id="btnSendDoge">
+        🚀 确认发送
+      </button>
+    </div>
+  </div>
+
+  <!-- ======== PAGE: RECEIVE ======== -->
+  <div class="page" id="page-receive">
+    <button class="back-btn" id="btnBackFromReceive">← 返回钱包</button>
+    <div class="receive-section">
+      <div class="form-title" style="margin-bottom:4px">📥 接收 DOGE</div>
+      <div class="form-sub" style="margin-bottom:20px">把你的地址分享给对方即可</div>
+
+      <div class="qr-container">
+        <canvas id="qrCanvas" width="160" height="160"></canvas>
+      </div>
+
+      <div style="background:var(--bg-card);border:1px solid rgba(200,164,53,0.2);border-radius:10px;padding:14px;margin-bottom:16px;word-break:break-all;font-family:'Courier New',monospace;font-size:11px;color:var(--doge-bright);text-align:left" id="receiveAddress">
+        加载中...
+      </div>
+
+      <button class="setup-btn btn-primary" id="btnCopyReceive" style="max-width:100%;margin:0">
+        📋 复制地址
+      </button>
+    </div>
+  </div>
+
+  <!-- ======== PAGE: RED PACKET — 发红包 ======== -->
+  <div class="page" id="page-redpacket-send">
+    <button class="back-btn" id="btnBackFromRP">← 返回钱包</button>
+    <div class="rp-send-wrap">
+
+      <div class="rp-header-art">
+        <div class="rp-lantern">🧧</div>
+        <div class="rp-title-cn">发 DOGE 红包</div>
+        <div class="rp-title-sub">Much Lucky. Very Wow. So Generous.</div>
+      </div>
+
+      <div class="rp-form">
+        <div class="rp-field">
+          <label class="rp-label">红包总金额 (DOGE)</label>
+          <div class="rp-input-row">
+            <input type="number" id="rpAmount" class="rp-input" placeholder="10" min="1" step="1"/>
+            <span class="rp-unit">DOGE</span>
+          </div>
+        </div>
+
+        <div class="rp-field">
+          <label class="rp-label">红包个数</label>
+          <div class="rp-count-btns">
+            <button class="rp-count-btn" data-n="3">3个</button>
+            <button class="rp-count-btn active" data-n="5">5个</button>
+            <button class="rp-count-btn" data-n="8">8个</button>
+            <button class="rp-count-btn" data-n="10">10个</button>
+          </div>
+          <input type="number" id="rpCount" class="rp-input" value="5" min="1" max="20" style="margin-top:8px"/>
+        </div>
+
+        <div class="rp-field">
+          <label class="rp-label">红包祝福语</label>
+          <input type="text" id="rpGreeting" class="rp-input" placeholder="恭喜发财，DOGE大吉！" maxlength="40"/>
+        </div>
+
+        <div class="rp-preview" id="rpPreview">
+          <span id="rpPreviewText">填写金额预览分配...</span>
+        </div>
+
+        <button class="rp-send-btn" id="btnCreateRP">
+          🧧 创建红包
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== PAGE: RED PACKET — 红包链接 ======== -->
+  <div class="page" id="page-redpacket-share">
+    <button class="back-btn" id="btnBackFromRPShare">← 返回钱包</button>
+    <div class="rp-share-wrap">
+      <div class="rp-share-envelope">
+        <div style="font-size:52px;margin-bottom:6px">🧧</div>
+        <div class="rp-share-title" id="rpShareTitle">红包已创建！</div>
+        <div class="rp-share-sub" id="rpShareSub">共 5 个，总额 10 DOGE</div>
+      </div>
+
+      <div class="rp-share-info">
+        <div class="rp-info-row">
+          <span class="rp-info-label">红包 ID</span>
+          <span class="rp-info-val" id="rpShareId" style="font-family:monospace;font-size:11px">--</span>
+        </div>
+        <div class="rp-info-row">
+          <span class="rp-info-label">随机分配</span>
+          <div id="rpShareSlots" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px"></div>
+        </div>
+      </div>
+
+      <div class="rp-share-link-box" id="rpShareLinkBox">
+        <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">分享此链接给朋友领取：</div>
+        <div class="rp-link-text" id="rpShareLink">生成中...</div>
+      </div>
+
+      <div style="display:flex;gap:8px;padding:0 20px 20px">
+        <button class="rp-action-btn" id="btnCopyRPLink" style="flex:1">📋 复制链接</button>
+        <button class="rp-action-btn rp-action-secondary" id="btnViewRPStatus" style="flex:1">📊 查看状态</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== PAGE: RED PACKET — 领红包 ======== -->
+  <div class="page" id="page-redpacket-claim">
+    <button class="back-btn" id="btnBackFromRPClaim">← 返回钱包</button>
+    <div class="rp-claim-wrap">
+
+      <div class="rp-claim-envelope" id="rpClaimEnvelope">
+        <div class="rp-claim-doge">🐕</div>
+        <div class="rp-claim-from" id="rpClaimFrom">来自朋友的红包</div>
+        <div class="rp-claim-greeting" id="rpClaimGreeting">恭喜发财，DOGE大吉！</div>
+        <div class="rp-claim-meta" id="rpClaimMeta">还剩 5/5 个未领取</div>
+      </div>
+
+      <div id="rpClaimResult" style="display:none" class="rp-result-card">
+        <div class="rp-result-icon">🎉</div>
+        <div class="rp-result-amount" id="rpResultAmount">0.00 DOGE</div>
+        <div class="rp-result-label">手气不错！</div>
+      </div>
+
+      <div class="rp-claim-slots" id="rpClaimSlots"></div>
+
+      <div style="padding:0 20px 20px">
+        <div class="rp-field" style="margin-bottom:12px">
+          <label class="rp-label">输入红包 ID</label>
+          <input type="text" id="rpClaimId" class="rp-input" placeholder="粘贴红包ID..." style="font-family:monospace"/>
+        </div>
+        <button class="rp-send-btn" id="btnLoadRP">🔍 查询红包</button>
+        <button class="rp-send-btn" id="btnClaimRP" style="display:none;background:linear-gradient(135deg,#c0392b,#e74c3c);margin-top:8px">
+          🧧 抢红包！
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== PAGE: RED PACKET — 状态 ======== -->
+  <div class="page" id="page-redpacket-status">
+    <button class="back-btn" id="btnBackFromRPStatus">← 红包</button>
+    <div style="padding:16px 20px">
+      <div style="font-family:'Impact','Arial Black',sans-serif;font-size:18px;color:var(--doge-gold);margin-bottom:4px">🧧 红包状态</div>
+      <div id="rpStatusContent" style="margin-top:12px"></div>
+    </div>
+  </div>
+
+  <!-- ======== PAGE: SETTINGS ======== -->
+  <div class="page" id="page-settings">
+    <button class="back-btn" id="btnBackFromSettings">← 返回钱包</button>
+    <div class="form-section">
+      <div class="form-title">⚙️ 钱包设置</div>
+      <div class="form-sub">Manage Your DOGE. Such Options. Wow.</div>
+
+      <div style="margin-bottom:12px">
+        <button class="setup-btn btn-secondary" id="btnExportKey" style="margin-bottom:10px">
+          🔑 导出私钥
+        </button>
+        <button class="setup-btn btn-secondary" id="btnShowSeed" style="margin-bottom:10px">
+          🌱 查看助记词
+        </button>
+        <button class="setup-btn btn-secondary" id="btnLock" style="margin-bottom:10px">
+          🔒 锁定钱包
+        </button>
+        <button class="setup-btn btn-danger" id="btnConfirmReset">
+          ⚠️ 重置钱包
+        </button>
+      </div>
+
+      <div style="text-align:center;font-size:10px;color:var(--text-muted);margin-top:16px">
+        DOGE Wallet v1.0.0<br>
+        Much Open Source. Very Trustworthy. Wow. 🐕
+      </div>
+    </div>
+  </div>
+
+</div><!-- end container -->
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<script src="js/secp256k1.js"></script>
+<script src="js/crypto-utils.js"></script>
+<script src="js/wallet.js"></script>
+<script src="js/redpacket.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/ui-redpacket.js"></script>
+</body>
+</html>
