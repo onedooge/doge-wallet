@@ -169,6 +169,12 @@
       border-color: var(--doge-orange);
       transform: translateY(-1px);
     }
+    .btn-icon.lang-btn {
+      font-size: 11px;
+      font-weight: 800;
+      font-family: 'Segoe UI', 'PingFang SC', sans-serif;
+      letter-spacing: 0.5px;
+    }
 
     /* ===== PAGES ===== */
     .page { display: none; }
@@ -216,11 +222,13 @@
     }
 
     .meme-text p {
-      font-size: 11px;
-      color: var(--doge-deep);
+      font-size: 13px;
+      color: var(--doge-brown);
       font-weight: 700;
-      margin-bottom: 6px;
-      font-family: 'Impact', 'Arial Black', sans-serif; letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      letter-spacing: 0.2px;
+      line-height: 1.5;
     }
     .meme-text p:last-child { margin-bottom: 0; }
 
@@ -338,14 +346,15 @@
     }
 
     .balance-card {
-      background: linear-gradient(135deg, #F4A820 0%, #E89823 55%, #C8A435 100%);
+      background: linear-gradient(135deg, #FFFAEA 0%, #FFEDB8 100%);
       padding: 22px 24px 20px;
       margin: 16px;
       border-radius: 18px;
+      border: 1px solid var(--border-strong);
       position: relative;
       overflow: hidden;
-      box-shadow: 0 10px 28px rgba(200,140,30,0.30);
-      color: #FFFDF3;
+      box-shadow: var(--shadow-md);
+      color: var(--doge-brown);
     }
 
     .balance-card::before {
@@ -353,7 +362,7 @@
       position: absolute;
       right: -30px; top: -30px;
       width: 160px; height: 160px;
-      background: radial-gradient(circle, rgba(255,253,243,0.25) 0%, transparent 65%);
+      background: radial-gradient(circle, rgba(244,168,32,0.18) 0%, transparent 65%);
       pointer-events: none;
     }
     .balance-card::after {
@@ -362,14 +371,14 @@
       right: 14px;
       bottom: -10px;
       font-size: 70px;
-      opacity: 0.18;
+      opacity: 0.10;
       pointer-events: none;
     }
 
     .balance-label {
       font-size: 10px;
       font-weight: 700;
-      color: rgba(255,253,243,0.85);
+      color: var(--doge-deep);
       text-transform: uppercase;
       letter-spacing: 1.5px;
       margin-bottom: 6px;
@@ -378,20 +387,19 @@
     .balance-amount {
       font-family: 'Impact', 'Arial Black', sans-serif; letter-spacing: 0.5px;
       font-size: 40px;
-      color: #FFFDF3;
+      color: var(--doge-brown);
       line-height: 1;
       margin-bottom: 4px;
-      text-shadow: 0 2px 4px rgba(80,50,0,0.25);
     }
 
     .balance-symbol {
       font-size: 18px;
-      color: rgba(255,253,243,0.9);
+      color: var(--doge-orange);
     }
 
     .balance-usd {
       font-size: 13px;
-      color: rgba(255,253,243,0.85);
+      color: var(--text-secondary);
       margin-bottom: 14px;
     }
 
@@ -399,17 +407,16 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(255,253,243,0.22);
-      border: 1px solid rgba(255,253,243,0.35);
+      background: rgba(255,255,255,0.6);
+      border: 1px solid var(--border);
       border-radius: 20px;
       padding: 4px 12px;
       font-size: 11px;
-      backdrop-filter: blur(4px);
     }
 
-    .price-ticker .price { color: #FFFDF3; font-weight: 700; }
-    .price-ticker .change { color: #C7FFF1; font-weight: 700; }
-    .price-ticker .change.down { color: #FFD1D1; }
+    .price-ticker .price { color: var(--doge-brown); font-weight: 700; }
+    .price-ticker .change { color: var(--success); font-weight: 700; }
+    .price-ticker .change.down { color: var(--danger); }
 
     .address-strip {
       padding: 12px 16px;
@@ -658,11 +665,54 @@
       background: rgba(217,68,68,0.08);
       border: 1px solid rgba(217,68,68,0.30);
       border-radius: 10px;
-      padding: 10px 14px;
+      padding: 12px 14px;
       font-size: 11px;
       color: #B22D2D;
       margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    .warn-list {
+      margin: 8px 0 0 18px;
+      padding: 0;
+    }
+    .warn-list li {
+      margin-bottom: 4px;
+      font-size: 11px;
+      color: #8B2418;
+    }
+    .warn-list li:last-child { margin-bottom: 0; }
+
+    .backup-check {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px 14px;
+      background: var(--bg-card-soft);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      margin: 16px 0;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-secondary);
       line-height: 1.5;
+      transition: all 0.2s;
+    }
+    .backup-check:hover { background: #FFF1C2; border-color: var(--doge-orange); }
+    .backup-check input {
+      margin-top: 2px;
+      width: 16px; height: 16px;
+      cursor: pointer;
+      accent-color: var(--doge-orange);
+      flex-shrink: 0;
+    }
+    .backup-check input:checked + span { color: var(--doge-brown); font-weight: 600; }
+
+    .setup-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+      filter: grayscale(0.4);
     }
 
     .seed-display {
@@ -993,12 +1043,13 @@
       <div class="doge-icon"><img src="icons/icon128.png" alt="DOGE"></div>
       <div>
         <div class="logo-text">DOGE Wallet</div>
-        <div class="logo-sub">Much Crypto. Very Wow.</div>
+        <div class="logo-sub" data-i18n="header_logo_sub">Much Crypto. Very Wow.</div>
       </div>
     </div>
     <div class="header-actions">
-      <button class="btn-icon" id="refreshBtn" title="刷新">🔄</button>
-      <button class="btn-icon" id="settingsBtn" title="设置">⚙️</button>
+      <button class="btn-icon lang-btn" id="langBtn" data-i18n-title="btn_lang_title" title="切换语言">EN</button>
+      <button class="btn-icon" id="refreshBtn" data-i18n-title="btn_refresh_title" title="刷新">🔄</button>
+      <button class="btn-icon" id="settingsBtn" data-i18n-title="btn_settings_title" title="设置">⚙️</button>
     </div>
   </div>
 
@@ -1006,20 +1057,20 @@
   <div class="page active" id="page-welcome">
     <div class="setup-page">
       <div class="setup-doge">🐕</div>
-      <div class="setup-title">欢迎使用 DOGE Wallet!</div>
-      <div class="setup-sub">Much Wow · Very Crypto · So Decentralized</div>
+      <div class="setup-title" data-i18n="welcome_title">欢迎使用 DOGE Wallet!</div>
+      <div class="setup-sub" data-i18n="welcome_sub">Much Wow · Very Crypto · So Decentralized</div>
 
       <div class="meme-text">
-        <p>🌟 wow. such wallet.</p>
-        <p>💰 very dogecoin. much safe.</p>
-        <p>🚀 so moon. many features.</p>
-        <p>✨ amaze. very secure. wow.</p>
+        <p data-i18n="welcome_meme1">🌟 wow. such wallet.</p>
+        <p data-i18n="welcome_meme2">💰 very dogecoin. much safe.</p>
+        <p data-i18n="welcome_meme3">🚀 so moon. many features.</p>
+        <p data-i18n="welcome_meme4">✨ amaze. very secure. wow.</p>
       </div>
 
-      <button class="setup-btn btn-primary" id="btnGoCreate">
+      <button class="setup-btn btn-primary" id="btnGoCreate" data-i18n="welcome_btn_create">
         🆕 创建新钱包
       </button>
-      <button class="setup-btn btn-secondary" id="btnGoImport">
+      <button class="setup-btn btn-secondary" id="btnGoImport" data-i18n="welcome_btn_import">
         📥 导入已有钱包
       </button>
     </div>
@@ -1028,23 +1079,23 @@
   <!-- ======== PAGE: CREATE PASSWORD ======== -->
   <div class="page" id="page-create-password">
     <div class="form-section">
-      <div class="form-title">🔐 设置钱包密码</div>
-      <div class="form-sub">密码用于加密本地数据，请牢记！</div>
+      <div class="form-title" data-i18n="create_pwd_title">🔐 设置钱包密码</div>
+      <div class="form-sub" data-i18n="create_pwd_sub">密码用于加密本地数据，请牢记！</div>
 
       <div class="input-group">
-        <label class="input-label">密码</label>
-        <input type="password" class="input-field" id="createPwd" placeholder="至少8位字符..." />
+        <label class="input-label" data-i18n="create_pwd_label">密码</label>
+        <input type="password" class="input-field" id="createPwd" data-i18n-ph="create_pwd_ph" placeholder="至少8位字符..." />
       </div>
       <div class="input-group">
-        <label class="input-label">确认密码</label>
-        <input type="password" class="input-field" id="confirmPwd" placeholder="再次输入密码..." />
+        <label class="input-label" data-i18n="create_pwd_confirm_label">确认密码</label>
+        <input type="password" class="input-field" id="confirmPwd" data-i18n-ph="create_pwd_confirm_ph" placeholder="再次输入密码..." />
       </div>
 
       <div style="height:8px"></div>
-      <button class="setup-btn btn-primary" id="btnCreateWallet">
+      <button class="setup-btn btn-primary" id="btnCreateWallet" data-i18n="create_pwd_btn">
         ✨ 创建钱包
       </button>
-      <button class="setup-btn btn-secondary" id="btnBackFromCreate">
+      <button class="setup-btn btn-secondary" id="btnBackFromCreate" data-i18n="back_btn">
         ← 返回
       </button>
     </div>
@@ -1053,17 +1104,28 @@
   <!-- ======== PAGE: BACKUP SEED ======== -->
   <div class="page" id="page-backup">
     <div class="form-section">
-      <div class="form-title">🌱 备份助记词</div>
-      <div class="form-sub">请将以下12个单词抄写到纸上安全保存！</div>
+      <div class="form-title" data-i18n="backup_title">🌱 备份助记词</div>
+      <div class="form-sub" data-i18n="backup_sub">这 12 个单词是恢复钱包的唯一凭证</div>
 
       <div class="warning-box">
-        ⚠️ <strong>重要！</strong> 助记词是恢复钱包的唯一方式。切勿截图或分享给任何人！
+        ⚠️ <strong data-i18n="backup_warn_head">请立即用纸笔抄写，妥善保管！</strong>
+        <ul class="warn-list">
+          <li><span data-i18n="backup_warn1_a">助记词 </span><strong data-i18n="backup_warn1_b">丢失</strong><span data-i18n="backup_warn1_c"> = 钱包永久丢失，</span><strong data-i18n="backup_warn1_d">无法找回</strong></li>
+          <li><span data-i18n="backup_warn2_a">助记词 </span><strong data-i18n="backup_warn2_b">泄露</strong><span data-i18n="backup_warn2_c"> = 资产被盗，</span><strong data-i18n="backup_warn2_d">无法挽回</strong></li>
+          <li data-i18n="backup_warn3">切勿截图、拍照、存入手机 / 电脑 / 网盘 / 聊天软件</li>
+          <li data-i18n="backup_warn4">切勿告诉任何人 — 包括"客服"、亲友、技术支持</li>
+          <li data-i18n="backup_warn5">建议抄写 2 份，分别放在不同的安全位置</li>
+        </ul>
       </div>
 
       <div class="seed-words" id="seedWordsDisplay"></div>
 
-      <div style="height:16px"></div>
-      <button class="setup-btn btn-primary" id="btnConfirmBackup">
+      <label class="backup-check" for="backupConfirmCheck">
+        <input type="checkbox" id="backupConfirmCheck">
+        <span><span data-i18n="backup_check_a">我已用纸笔抄写并妥善保管，理解一旦丢失或泄露</span><strong data-i18n="backup_check_b">无法找回</strong></span>
+      </label>
+
+      <button class="setup-btn btn-primary" id="btnConfirmBackup" data-i18n="backup_confirm_btn" disabled>
         ✅ 我已安全备份
       </button>
     </div>
@@ -1072,22 +1134,22 @@
   <!-- ======== PAGE: IMPORT ======== -->
   <div class="page" id="page-import">
     <div class="form-section">
-      <div class="form-title">📥 导入钱包</div>
-      <div class="form-sub">输入助记词或私钥来恢复您的钱包</div>
+      <div class="form-title" data-i18n="import_title">📥 导入钱包</div>
+      <div class="form-sub" data-i18n="import_sub">输入助记词或私钥来恢复您的钱包</div>
 
       <div class="input-group">
-        <label class="input-label">助记词 / 私钥</label>
-        <textarea class="input-field" id="importSeed" placeholder="输入12或24个助记词，用空格分隔&#10;或输入WIF格式私钥..."></textarea>
+        <label class="input-label" data-i18n="import_seed_label">助记词 / 私钥</label>
+        <textarea class="input-field" id="importSeed" data-i18n-ph="import_seed_ph" placeholder="输入12或24个助记词，用空格分隔&#10;或输入WIF格式私钥..."></textarea>
       </div>
       <div class="input-group">
-        <label class="input-label">设置新密码</label>
-        <input type="password" class="input-field" id="importPwd" placeholder="设置钱包访问密码..." />
+        <label class="input-label" data-i18n="import_pwd_label">设置新密码</label>
+        <input type="password" class="input-field" id="importPwd" data-i18n-ph="import_pwd_ph" placeholder="设置钱包访问密码..." />
       </div>
 
-      <button class="setup-btn btn-primary" id="btnImportWallet">
+      <button class="setup-btn btn-primary" id="btnImportWallet" data-i18n="import_btn">
         📥 导入钱包
       </button>
-      <button class="setup-btn btn-secondary" id="btnBackFromImport">
+      <button class="setup-btn btn-secondary" id="btnBackFromImport" data-i18n="back_btn">
         ← 返回
       </button>
     </div>
@@ -1097,18 +1159,18 @@
   <div class="page" id="page-unlock">
     <div class="setup-page">
       <div class="setup-doge" style="font-size:50px;margin-bottom:16px;">🔐</div>
-      <div class="setup-title">解锁钱包</div>
-      <div class="setup-sub">Much Security. Very Safe. Wow.</div>
+      <div class="setup-title" data-i18n="unlock_title">解锁钱包</div>
+      <div class="setup-sub" data-i18n="unlock_sub">Much Security. Very Safe. Wow.</div>
 
       <div class="input-group" style="text-align:left">
-        <label class="input-label">密码</label>
-        <input type="password" class="input-field" id="unlockPwd" placeholder="输入钱包密码..." />
+        <label class="input-label" data-i18n="unlock_pwd_label">密码</label>
+        <input type="password" class="input-field" id="unlockPwd" data-i18n-ph="unlock_pwd_ph" placeholder="输入钱包密码..." />
       </div>
       <div style="height:8px"></div>
-      <button class="setup-btn btn-primary" id="btnUnlock">
+      <button class="setup-btn btn-primary" id="btnUnlock" data-i18n="unlock_btn">
         🔓 解锁
       </button>
-      <button class="setup-btn btn-secondary" id="btnResetFromUnlock">
+      <button class="setup-btn btn-secondary" id="btnResetFromUnlock" data-i18n="unlock_reset_btn">
         🔄 重置钱包
       </button>
     </div>
@@ -1118,7 +1180,7 @@
   <div class="page" id="page-wallet">
     <div class="wallet-page">
       <div class="balance-card">
-        <div class="balance-label">总余额</div>
+        <div class="balance-label" data-i18n="wallet_balance_label">总余额</div>
         <div class="balance-amount">
           <span id="balanceAmount">0.00</span>
           <span class="balance-symbol">DOGE</span>
@@ -1132,37 +1194,37 @@
       </div>
 
       <div class="address-strip">
-        <span class="address-text" id="walletAddress">加载中...</span>
-        <button class="copy-btn" id="copyAddrBtn">复制</button>
+        <span class="address-text" id="walletAddress" data-i18n="wallet_address_loading">加载中...</span>
+        <button class="copy-btn" id="copyAddrBtn" data-i18n="wallet_copy">复制</button>
       </div>
 
       <div class="action-grid">
         <div class="action-btn" id="btnGoSend">
           <div class="icon">📤</div>
-          <div class="label">发送</div>
+          <div class="label" data-i18n="wallet_action_send">发送</div>
         </div>
         <div class="action-btn" id="btnGoReceive">
           <div class="icon">📥</div>
-          <div class="label">接收</div>
+          <div class="label" data-i18n="wallet_action_receive">接收</div>
         </div>
         <div class="action-btn" id="btnGoRedPacket">
           <div class="icon">🧧</div>
-          <div class="label">红包</div>
+          <div class="label" data-i18n="wallet_action_redpacket">红包</div>
         </div>
         <div class="action-btn" id="btnRefresh">
           <div class="icon">🔄</div>
-          <div class="label">刷新</div>
+          <div class="label" data-i18n="wallet_action_refresh">刷新</div>
         </div>
       </div>
 
       <div class="tx-section">
         <div class="section-header">
-          <div class="section-title">交易记录</div>
-          <button id="btnGoClaimRP" style="background:rgba(139,0,0,0.25);border:1px solid rgba(192,57,43,0.4);border-radius:8px;color:#FFD700;font-size:10px;font-weight:700;padding:4px 10px;cursor:pointer">🧧 领红包</button>
+          <div class="section-title" data-i18n="wallet_tx_title">交易记录</div>
+          <button id="btnGoClaimRP" data-i18n="wallet_claim_rp" style="background:rgba(139,0,0,0.25);border:1px solid rgba(192,57,43,0.4);border-radius:8px;color:#FFD700;font-size:10px;font-weight:700;padding:4px 10px;cursor:pointer">🧧 领红包</button>
         </div>
         <div id="txList">
           <div style="text-align:center;padding:20px;color:var(--text-muted);font-size:12px;">
-            🐕 暂无交易记录<br>Such empty. Very quiet. Wow.
+            <span data-i18n="wallet_tx_empty_line1">🐕 暂无交易记录</span><br><span data-i18n="wallet_tx_empty_line2">Such empty. Very quiet. Wow.</span>
           </div>
         </div>
       </div>
@@ -1171,29 +1233,29 @@
 
   <!-- ======== PAGE: SEND ======== -->
   <div class="page" id="page-send">
-    <button class="back-btn" id="btnBackFromSend">← 返回钱包</button>
+    <button class="back-btn" id="btnBackFromSend" data-i18n="back_wallet">← 返回钱包</button>
     <div class="form-section">
-      <div class="form-title">📤 发送 DOGE</div>
-      <div class="form-sub">Much Send. Very Transaction. Wow.</div>
+      <div class="form-title" data-i18n="send_title">📤 发送 DOGE</div>
+      <div class="form-sub" data-i18n="send_sub">Much Send. Very Transaction. Wow.</div>
 
       <div class="input-group">
-        <label class="input-label">收款地址</label>
-        <input type="text" class="input-field" id="sendTo" placeholder="D开头的Dogecoin地址..." />
+        <label class="input-label" data-i18n="send_to_label">收款地址</label>
+        <input type="text" class="input-field" id="sendTo" data-i18n-ph="send_to_ph" placeholder="D开头的Dogecoin地址..." />
       </div>
       <div class="input-group">
-        <label class="input-label">发送数量 (DOGE)</label>
+        <label class="input-label" data-i18n="send_amount_label">发送数量 (DOGE)</label>
         <input type="number" class="input-field" id="sendAmount" placeholder="0.00" min="0" step="1" />
       </div>
       <div class="input-group">
-        <label class="input-label">网络手续费 (DOGE)</label>
+        <label class="input-label" data-i18n="send_fee_label">网络手续费 (DOGE)</label>
         <input type="number" class="input-field" id="sendFee" value="1" min="1" step="0.5" />
       </div>
 
       <div style="background:var(--bg-card-soft);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:16px;font-size:11px;color:var(--text-secondary);box-shadow:var(--shadow-sm)">
-        可用余额: <span style="color:var(--doge-brown);font-weight:700;font-size:13px" id="sendMaxBalance">0.00</span> DOGE
+        <span data-i18n="send_balance_avail">可用余额:</span> <span style="color:var(--doge-brown);font-weight:700;font-size:13px" id="sendMaxBalance">0.00</span> DOGE
       </div>
 
-      <button class="setup-btn btn-primary" id="btnSendDoge">
+      <button class="setup-btn btn-primary" id="btnSendDoge" data-i18n="send_btn">
         🚀 确认发送
       </button>
     </div>
@@ -1201,20 +1263,20 @@
 
   <!-- ======== PAGE: RECEIVE ======== -->
   <div class="page" id="page-receive">
-    <button class="back-btn" id="btnBackFromReceive">← 返回钱包</button>
+    <button class="back-btn" id="btnBackFromReceive" data-i18n="back_wallet">← 返回钱包</button>
     <div class="receive-section">
-      <div class="form-title" style="margin-bottom:4px">📥 接收 DOGE</div>
-      <div class="form-sub" style="margin-bottom:20px">把你的地址分享给对方即可</div>
+      <div class="form-title" data-i18n="recv_title" style="margin-bottom:4px">📥 接收 DOGE</div>
+      <div class="form-sub" data-i18n="recv_sub" style="margin-bottom:20px">把你的地址分享给对方即可</div>
 
       <div class="qr-container">
         <canvas id="qrCanvas" width="160" height="160"></canvas>
       </div>
 
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px;word-break:break-all;font-family:'Courier New',monospace;font-size:11px;color:var(--doge-brown);text-align:left;box-shadow:var(--shadow-sm)" id="receiveAddress">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px;word-break:break-all;font-family:'Courier New',monospace;font-size:11px;color:var(--doge-brown);text-align:left;box-shadow:var(--shadow-sm)" id="receiveAddress" data-i18n="wallet_address_loading">
         加载中...
       </div>
 
-      <button class="setup-btn btn-primary" id="btnCopyReceive" style="max-width:100%;margin:0">
+      <button class="setup-btn btn-primary" id="btnCopyReceive" data-i18n="recv_copy_btn" style="max-width:100%;margin:0">
         📋 复制地址
       </button>
     </div>
@@ -1222,18 +1284,18 @@
 
   <!-- ======== PAGE: RED PACKET — 发红包 ======== -->
   <div class="page" id="page-redpacket-send">
-    <button class="back-btn" id="btnBackFromRP">← 返回钱包</button>
+    <button class="back-btn" id="btnBackFromRP" data-i18n="back_wallet">← 返回钱包</button>
     <div class="rp-send-wrap">
 
       <div class="rp-header-art">
         <div class="rp-lantern">🧧</div>
-        <div class="rp-title-cn">发 DOGE 红包</div>
-        <div class="rp-title-sub">Much Lucky. Very Wow. So Generous.</div>
+        <div class="rp-title-cn" data-i18n="rp_send_title">发 DOGE 红包</div>
+        <div class="rp-title-sub" data-i18n="rp_send_sub">Much Lucky. Very Wow. So Generous.</div>
       </div>
 
       <div class="rp-form">
         <div class="rp-field">
-          <label class="rp-label">红包总金额 (DOGE)</label>
+          <label class="rp-label" data-i18n="rp_amount_label">红包总金额 (DOGE)</label>
           <div class="rp-input-row">
             <input type="number" id="rpAmount" class="rp-input" placeholder="10" min="1" step="1"/>
             <span class="rp-unit">DOGE</span>
@@ -1241,26 +1303,26 @@
         </div>
 
         <div class="rp-field">
-          <label class="rp-label">红包个数</label>
+          <label class="rp-label" data-i18n="rp_count_label">红包个数</label>
           <div class="rp-count-btns">
-            <button class="rp-count-btn" data-n="3">3个</button>
-            <button class="rp-count-btn active" data-n="5">5个</button>
-            <button class="rp-count-btn" data-n="8">8个</button>
-            <button class="rp-count-btn" data-n="10">10个</button>
+            <button class="rp-count-btn" data-n="3" data-i18n="rp_count_3">3个</button>
+            <button class="rp-count-btn active" data-n="5" data-i18n="rp_count_5">5个</button>
+            <button class="rp-count-btn" data-n="8" data-i18n="rp_count_8">8个</button>
+            <button class="rp-count-btn" data-n="10" data-i18n="rp_count_10">10个</button>
           </div>
           <input type="number" id="rpCount" class="rp-input" value="5" min="1" max="20" style="margin-top:8px"/>
         </div>
 
         <div class="rp-field">
-          <label class="rp-label">红包祝福语</label>
-          <input type="text" id="rpGreeting" class="rp-input" placeholder="恭喜发财，DOGE大吉！" maxlength="40"/>
+          <label class="rp-label" data-i18n="rp_greet_label">红包祝福语</label>
+          <input type="text" id="rpGreeting" class="rp-input" data-i18n-ph="rp_greet_ph" placeholder="恭喜发财，DOGE大吉！" maxlength="40"/>
         </div>
 
         <div class="rp-preview" id="rpPreview">
-          <span id="rpPreviewText">填写金额预览分配...</span>
+          <span id="rpPreviewText" data-i18n="rp_preview_default">填写金额预览分配...</span>
         </div>
 
-        <button class="rp-send-btn" id="btnCreateRP">
+        <button class="rp-send-btn" id="btnCreateRP" data-i18n="rp_create_btn">
           🧧 创建红包
         </button>
       </div>
@@ -1269,64 +1331,64 @@
 
   <!-- ======== PAGE: RED PACKET — 红包链接 ======== -->
   <div class="page" id="page-redpacket-share">
-    <button class="back-btn" id="btnBackFromRPShare">← 返回钱包</button>
+    <button class="back-btn" id="btnBackFromRPShare" data-i18n="back_wallet">← 返回钱包</button>
     <div class="rp-share-wrap">
       <div class="rp-share-envelope">
         <div style="font-size:52px;margin-bottom:6px">🧧</div>
-        <div class="rp-share-title" id="rpShareTitle">红包已创建！</div>
+        <div class="rp-share-title" id="rpShareTitle" data-i18n="rp_share_title">红包已创建！</div>
         <div class="rp-share-sub" id="rpShareSub">共 5 个，总额 10 DOGE</div>
       </div>
 
       <div class="rp-share-info">
         <div class="rp-info-row">
-          <span class="rp-info-label">红包 ID</span>
+          <span class="rp-info-label" data-i18n="rp_share_id_label">红包 ID</span>
           <span class="rp-info-val" id="rpShareId" style="font-family:monospace;font-size:11px">--</span>
         </div>
         <div class="rp-info-row">
-          <span class="rp-info-label">随机分配</span>
+          <span class="rp-info-label" data-i18n="rp_share_slots_label">随机分配</span>
           <div id="rpShareSlots" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px"></div>
         </div>
       </div>
 
       <div class="rp-share-link-box" id="rpShareLinkBox">
-        <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">分享此链接给朋友领取：</div>
-        <div class="rp-link-text" id="rpShareLink">生成中...</div>
+        <div data-i18n="rp_share_link_hint" style="font-size:10px;color:var(--text-muted);margin-bottom:6px">分享此链接给朋友领取：</div>
+        <div class="rp-link-text" id="rpShareLink" data-i18n="rp_share_link_loading">生成中...</div>
       </div>
 
       <div style="display:flex;gap:8px;padding:0 20px 20px">
-        <button class="rp-action-btn" id="btnCopyRPLink" style="flex:1">📋 复制链接</button>
-        <button class="rp-action-btn rp-action-secondary" id="btnViewRPStatus" style="flex:1">📊 查看状态</button>
+        <button class="rp-action-btn" id="btnCopyRPLink" data-i18n="rp_copy_link" style="flex:1">📋 复制链接</button>
+        <button class="rp-action-btn rp-action-secondary" id="btnViewRPStatus" data-i18n="rp_view_status" style="flex:1">📊 查看状态</button>
       </div>
     </div>
   </div>
 
   <!-- ======== PAGE: RED PACKET — 领红包 ======== -->
   <div class="page" id="page-redpacket-claim">
-    <button class="back-btn" id="btnBackFromRPClaim">← 返回钱包</button>
+    <button class="back-btn" id="btnBackFromRPClaim" data-i18n="back_wallet">← 返回钱包</button>
     <div class="rp-claim-wrap">
 
       <div class="rp-claim-envelope" id="rpClaimEnvelope">
         <div class="rp-claim-doge">🐕</div>
-        <div class="rp-claim-from" id="rpClaimFrom">来自朋友的红包</div>
-        <div class="rp-claim-greeting" id="rpClaimGreeting">恭喜发财，DOGE大吉！</div>
-        <div class="rp-claim-meta" id="rpClaimMeta">还剩 5/5 个未领取</div>
+        <div class="rp-claim-from" id="rpClaimFrom" data-i18n="rp_claim_from">来自朋友的红包</div>
+        <div class="rp-claim-greeting" id="rpClaimGreeting" data-i18n="rp_claim_greet">恭喜发财，DOGE大吉！</div>
+        <div class="rp-claim-meta" id="rpClaimMeta" data-i18n="rp_claim_meta">还剩 5/5 个未领取</div>
       </div>
 
       <div id="rpClaimResult" style="display:none" class="rp-result-card">
         <div class="rp-result-icon">🎉</div>
         <div class="rp-result-amount" id="rpResultAmount">0.00 DOGE</div>
-        <div class="rp-result-label">手气不错！</div>
+        <div class="rp-result-label" data-i18n="rp_result_label">手气不错！</div>
       </div>
 
       <div class="rp-claim-slots" id="rpClaimSlots"></div>
 
       <div style="padding:0 20px 20px">
         <div class="rp-field" style="margin-bottom:12px">
-          <label class="rp-label">输入红包 ID</label>
-          <input type="text" id="rpClaimId" class="rp-input" placeholder="粘贴红包ID..." style="font-family:monospace"/>
+          <label class="rp-label" data-i18n="rp_claim_id_label">输入红包 ID</label>
+          <input type="text" id="rpClaimId" class="rp-input" data-i18n-ph="rp_claim_id_ph" placeholder="粘贴红包ID..." style="font-family:monospace"/>
         </div>
-        <button class="rp-send-btn" id="btnLoadRP">🔍 查询红包</button>
-        <button class="rp-send-btn" id="btnClaimRP" style="display:none;background:linear-gradient(135deg,#c0392b,#e74c3c);margin-top:8px">
+        <button class="rp-send-btn" id="btnLoadRP" data-i18n="rp_load_btn">🔍 查询红包</button>
+        <button class="rp-send-btn" id="btnClaimRP" data-i18n="rp_claim_btn" style="display:none;background:linear-gradient(135deg,#c0392b,#e74c3c);margin-top:8px">
           🧧 抢红包！
         </button>
       </div>
@@ -1335,38 +1397,41 @@
 
   <!-- ======== PAGE: RED PACKET — 状态 ======== -->
   <div class="page" id="page-redpacket-status">
-    <button class="back-btn" id="btnBackFromRPStatus">← 红包</button>
+    <button class="back-btn" id="btnBackFromRPStatus" data-i18n="back_rp">← 红包</button>
     <div style="padding:16px 20px">
-      <div style="font-family:'Impact','Arial Black',sans-serif;font-size:18px;color:var(--doge-gold);margin-bottom:4px">🧧 红包状态</div>
+      <div data-i18n="rp_status_title" style="font-family:'Impact','Arial Black',sans-serif;font-size:18px;color:var(--doge-gold);margin-bottom:4px">🧧 红包状态</div>
       <div id="rpStatusContent" style="margin-top:12px"></div>
     </div>
   </div>
 
   <!-- ======== PAGE: SETTINGS ======== -->
   <div class="page" id="page-settings">
-    <button class="back-btn" id="btnBackFromSettings">← 返回钱包</button>
+    <button class="back-btn" id="btnBackFromSettings" data-i18n="back_wallet">← 返回钱包</button>
     <div class="form-section">
-      <div class="form-title">⚙️ 钱包设置</div>
-      <div class="form-sub">Manage Your DOGE. Such Options. Wow.</div>
+      <div class="form-title" data-i18n="settings_title">⚙️ 钱包设置</div>
+      <div class="form-sub" data-i18n="settings_sub">Manage Your DOGE. Such Options. Wow.</div>
 
       <div style="margin-bottom:12px">
-        <button class="setup-btn btn-secondary" id="btnExportKey" style="margin-bottom:10px">
+        <button class="setup-btn btn-secondary" id="btnExportKey" data-i18n="settings_export_key" style="margin-bottom:10px">
           🔑 导出私钥
         </button>
-        <button class="setup-btn btn-secondary" id="btnShowSeed" style="margin-bottom:10px">
+        <button class="setup-btn btn-secondary" id="btnShowSeed" data-i18n="settings_show_seed" style="margin-bottom:10px">
           🌱 查看助记词
         </button>
-        <button class="setup-btn btn-secondary" id="btnLock" style="margin-bottom:10px">
+        <button class="setup-btn btn-secondary" id="btnExportSeedEnc" data-i18n="settings_export_seed" style="margin-bottom:10px">
+          📦 加密导出助记词
+        </button>
+        <button class="setup-btn btn-secondary" id="btnLock" data-i18n="settings_lock" style="margin-bottom:10px">
           🔒 锁定钱包
         </button>
-        <button class="setup-btn btn-danger" id="btnConfirmReset">
+        <button class="setup-btn btn-danger" id="btnConfirmReset" data-i18n="settings_reset">
           ⚠️ 重置钱包
         </button>
       </div>
 
       <div style="text-align:center;font-size:10px;color:var(--text-muted);margin-top:16px">
-        DOGE Wallet v1.0.0<br>
-        Much Open Source. Very Trustworthy. Wow. 🐕
+        <span data-i18n="settings_footer_l1">DOGE Wallet v1.0.0</span><br>
+        <span data-i18n="settings_footer_l2">Much Open Source. Very Trustworthy. Wow. 🐕</span>
       </div>
     </div>
   </div>
@@ -1376,6 +1441,7 @@
 <!-- Toast notification -->
 <div class="toast" id="toast"></div>
 
+<script src="js/i18n.js"></script>
 <script src="js/secp256k1.js"></script>
 <script src="js/crypto-utils.js"></script>
 <script src="js/wallet.js"></script>

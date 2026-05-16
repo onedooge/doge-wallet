@@ -1,5 +1,7 @@
 # 🐕 DOGE Wallet — Chrome Extension
 
+**English** | [中文](README.zh-CN.md)
+
 > **Much Crypto. Very Secure. Such Red Packet. Wow.**
 
 A fully client-side Dogecoin Chrome extension wallet with real secp256k1 cryptography, BIP39/BIP44 HD key derivation, on-chain transaction signing, and a WeChat-style 🧧 **red packet** feature.
@@ -137,7 +139,7 @@ Transaction Hash ✓
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/doge-wallet.git
+   git clone https://github.com/onedooge/doge-wallet.git
    ```
 
 2. Open Chrome and go to `chrome://extensions/`

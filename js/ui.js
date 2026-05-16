@@ -9,6 +9,14 @@ let pendingMnemonic = null;
 // ===== INITIALIZATION =====
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // ---- i18n ----
+  I18n.initI18n();
+  document.getElementById('langBtn').addEventListener('click', () => {
+    I18n.toggleLang();
+    // Re-render dynamic content that may already be on screen
+    if (currentPage === 'page-wallet') updateWalletUI();
+  });
+
   // ---- Welcome page ----
   document.getElementById('btnGoCreate').addEventListener('click', () => showPage('page-create-password', 'create'));
   document.getElementById('btnGoImport').addEventListener('click', () => showPage('page-import'));
@@ -19,6 +27,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // ---- Backup page ----
   document.getElementById('btnConfirmBackup').addEventListener('click', confirmBackup);
+  document.getElementById('backupConfirmCheck').addEventListener('change', e => {
+    document.getElementById('btnConfirmBackup').disabled = !e.target.checked;
+  });
 
   // ---- Import page ----
   document.getElementById('btnImportWallet').addEventListener('click', importWallet);
@@ -52,6 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('btnBackFromSettings').addEventListener('click', () => showPage('page-wallet'));
   document.getElementById('btnExportKey').addEventListener('click', exportPrivKey);
   document.getElementById('btnShowSeed').addEventListener('click', showSeedPhrase);
+  document.getElementById('btnExportSeedEnc').addEventListener('click', exportEncryptedMnemonic);
   document.getElementById('btnLock').addEventListener('click', lockWallet);
   document.getElementById('btnConfirmReset').addEventListener('click', confirmReset);
 
@@ -140,6 +152,14 @@ function displaySeedWords(words) {
 }
 
 function confirmBackup() {
+  if (!confirm('⚠️ 最后确认\n\n你已经把 12 个助记词手写抄录到纸上并妥善保管了吗？\n\n点击"确定"后将关闭此页，今后只能通过设置 → 查看助记词重新查看。')) {
+    return;
+  }
+  // Reset check state for next time
+  const chk = document.getElementById('backupConfirmCheck');
+  chk.checked = false;
+  document.getElementById('btnConfirmBackup').disabled = true;
+
   pendingMnemonic = null;
   document.getElementById('mainHeader').style.display = 'flex';
   showPage('page-wallet');
@@ -234,16 +254,18 @@ function renderTransactions(txs) {
   const list = document.getElementById('txList');
   if (!txs || txs.length === 0) {
     list.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:12px;">
-      🐕 暂无交易记录<br>Such empty. Very quiet. Wow.
+      ${I18n.t('wallet_tx_empty_line1')}<br>${I18n.t('wallet_tx_empty_line2')}
     </div>`;
     return;
   }
 
+  const recvLabel = I18n.getLang() === 'zh' ? '收到' : 'Received';
+  const sendLabel = I18n.getLang() === 'zh' ? '发送' : 'Sent';
   list.innerHTML = txs.map(tx => `
     <div class="tx-item">
       <div class="tx-icon ${tx.type}">${tx.type === 'recv' ? '⬇️' : '⬆️'}</div>
       <div class="tx-info">
-        <div class="tx-type">${tx.type === 'recv' ? '收到' : '发送'}</div>
+        <div class="tx-type">${tx.type === 'recv' ? recvLabel : sendLabel}</div>
         <div class="tx-addr">${tx.address || tx.hash.slice(0, 20) + '...'}</div>
       </div>
       <div class="tx-amount">
@@ -392,6 +414,65 @@ async function exportPrivKey() {
     showToast('❌ ' + e.message, true);
   }
 };
+
+async function exportEncryptedMnemonic() {
+  const mnemonic = WalletCore.state.mnemonic;
+  if (!mnemonic) {
+    showToast('❌ 钱包已锁定，请先解锁', true);
+    return;
+  }
+
+  const proceed = confirm(
+    '⚠️ 加密导出助记词\n\n' +
+    '风险提示：\n' +
+    '• 联网设备存在被盗、勒索软件加密、云同步外泄等风险\n' +
+    '• 文件即使用密码加密，弱密码仍可能被暴力破解\n' +
+    '• 最安全的方式是纸笔抄写后离线保管\n\n' +
+    '下一步需要输入钱包密码进行加密。\n确定继续？'
+  );
+  if (!proceed) return;
+
+  const pwd = prompt('请输入钱包密码（用于加密导出文件）：');
+  if (pwd === null || pwd === '') return;
+
+  // Verify password by attempting to decrypt stored wallet
+  try {
+    const enc = await new Promise(r =>
+      chrome.storage.local.get(['doge_enc'], d => r(d['doge_enc']))
+    );
+    if (!enc) throw new Error('no wallet');
+    await DogeSecp256k1.decryptData(enc, pwd);
+  } catch (e) {
+    showToast('❌ 密码错误', true);
+    return;
+  }
+
+  // Encrypt mnemonic with same password
+  const mnemonicStr = typeof mnemonic === 'string' ? mnemonic : mnemonic.join(' ');
+  const encrypted = await DogeSecp256k1.encryptData({ mnemonic: mnemonicStr }, pwd);
+
+  const backup = {
+    type: 'doge-wallet-mnemonic-backup',
+    version: 1,
+    createdAt: new Date().toISOString(),
+    note: 'Encrypted with wallet password (AES-GCM + PBKDF2-SHA256, 210k iters). Use the same password to decrypt.',
+    encrypted,
+  };
+
+  // Trigger download
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const ts = new Date().toISOString().slice(0, 10);
+  a.download = `doge-wallet-backup-${ts}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+  showToast('✅ 已加密导出，请妥善保管');
+}
 
 function showSeedPhrase() {
   const mnemonic = WalletCore.state.mnemonic;

@@ -1,0 +1,345 @@
+// i18n.js — bilingual (zh / en) dictionary and switcher
+'use strict';
+
+const I18N = {
+  zh: {
+    // header
+    header_logo_sub: 'Much Crypto. Very Wow.',
+    btn_refresh_title: '刷新',
+    btn_settings_title: '设置',
+    btn_lang_title: '切换语言 / Switch Language',
+    back_btn: '← 返回',
+    back_wallet: '← 返回钱包',
+    back_rp: '← 红包',
+
+    // welcome
+    welcome_title: '欢迎使用 DOGE Wallet!',
+    welcome_sub: 'Much Wow · Very Crypto · So Decentralized',
+    welcome_meme1: '🌟 wow. such wallet.',
+    welcome_meme2: '💰 very dogecoin. much safe.',
+    welcome_meme3: '🚀 so moon. many features.',
+    welcome_meme4: '✨ amaze. very secure. wow.',
+    welcome_btn_create: '🆕 创建新钱包',
+    welcome_btn_import: '📥 导入已有钱包',
+
+    // create password
+    create_pwd_title: '🔐 设置钱包密码',
+    create_pwd_sub: '密码用于加密本地数据，请牢记！',
+    create_pwd_label: '密码',
+    create_pwd_ph: '至少8位字符...',
+    create_pwd_confirm_label: '确认密码',
+    create_pwd_confirm_ph: '再次输入密码...',
+    create_pwd_btn: '✨ 创建钱包',
+
+    // backup
+    backup_title: '🌱 备份助记词',
+    backup_sub: '这 12 个单词是恢复钱包的唯一凭证',
+    backup_warn_head: '请立即用纸笔抄写，妥善保管！',
+    backup_warn1_a: '助记词 ',
+    backup_warn1_b: '丢失',
+    backup_warn1_c: ' = 钱包永久丢失，',
+    backup_warn1_d: '无法找回',
+    backup_warn2_a: '助记词 ',
+    backup_warn2_b: '泄露',
+    backup_warn2_c: ' = 资产被盗，',
+    backup_warn2_d: '无法挽回',
+    backup_warn3: '切勿截图、拍照、存入手机 / 电脑 / 网盘 / 聊天软件',
+    backup_warn4: '切勿告诉任何人 — 包括"客服"、亲友、技术支持',
+    backup_warn5: '建议抄写 2 份，分别放在不同的安全位置',
+    backup_check_a: '我已用纸笔抄写并妥善保管，理解一旦丢失或泄露',
+    backup_check_b: '无法找回',
+    backup_confirm_btn: '✅ 我已安全备份',
+
+    // import
+    import_title: '📥 导入钱包',
+    import_sub: '输入助记词或私钥来恢复您的钱包',
+    import_seed_label: '助记词 / 私钥',
+    import_seed_ph: '输入12或24个助记词，用空格分隔\n或输入WIF格式私钥...',
+    import_pwd_label: '设置新密码',
+    import_pwd_ph: '设置钱包访问密码...',
+    import_btn: '📥 导入钱包',
+
+    // unlock
+    unlock_title: '解锁钱包',
+    unlock_sub: 'Much Security. Very Safe. Wow.',
+    unlock_pwd_label: '密码',
+    unlock_pwd_ph: '输入钱包密码...',
+    unlock_btn: '🔓 解锁',
+    unlock_reset_btn: '🔄 重置钱包',
+
+    // wallet main
+    wallet_balance_label: '总余额',
+    wallet_address_loading: '加载中...',
+    wallet_copy: '复制',
+    wallet_copied: '✓ 已复制',
+    wallet_action_send: '发送',
+    wallet_action_receive: '接收',
+    wallet_action_redpacket: '红包',
+    wallet_action_refresh: '刷新',
+    wallet_tx_title: '交易记录',
+    wallet_claim_rp: '🧧 领红包',
+    wallet_tx_empty_line1: '🐕 暂无交易记录',
+    wallet_tx_empty_line2: 'Such empty. Very quiet. Wow.',
+
+    // send
+    send_title: '📤 发送 DOGE',
+    send_sub: 'Much Send. Very Transaction. Wow.',
+    send_to_label: '收款地址',
+    send_to_ph: 'D开头的Dogecoin地址...',
+    send_amount_label: '发送数量 (DOGE)',
+    send_fee_label: '网络手续费 (DOGE)',
+    send_balance_avail: '可用余额:',
+    send_btn: '🚀 确认发送',
+
+    // receive
+    recv_title: '📥 接收 DOGE',
+    recv_sub: '把你的地址分享给对方即可',
+    recv_copy_btn: '📋 复制地址',
+
+    // red packet — send
+    rp_send_title: '发 DOGE 红包',
+    rp_send_sub: 'Much Lucky. Very Wow. So Generous.',
+    rp_amount_label: '红包总金额 (DOGE)',
+    rp_count_label: '红包个数',
+    rp_count_3: '3个',
+    rp_count_5: '5个',
+    rp_count_8: '8个',
+    rp_count_10: '10个',
+    rp_greet_label: '红包祝福语',
+    rp_greet_ph: '恭喜发财，DOGE大吉！',
+    rp_preview_default: '填写金额预览分配...',
+    rp_create_btn: '🧧 创建红包',
+
+    // red packet — share
+    rp_share_title: '红包已创建！',
+    rp_share_sub_tmpl: '共 5 个，总额 10 DOGE',
+    rp_share_id_label: '红包 ID',
+    rp_share_slots_label: '随机分配',
+    rp_share_link_hint: '分享此链接给朋友领取：',
+    rp_share_link_loading: '生成中...',
+    rp_copy_link: '📋 复制链接',
+    rp_view_status: '📊 查看状态',
+
+    // red packet — claim
+    rp_claim_from: '来自朋友的红包',
+    rp_claim_greet: '恭喜发财，DOGE大吉！',
+    rp_claim_meta: '还剩 5/5 个未领取',
+    rp_result_label: '手气不错！',
+    rp_claim_id_label: '输入红包 ID',
+    rp_claim_id_ph: '粘贴红包ID...',
+    rp_load_btn: '🔍 查询红包',
+    rp_claim_btn: '🧧 抢红包！',
+
+    // red packet — status
+    rp_status_title: '🧧 红包状态',
+
+    // settings
+    settings_title: '⚙️ 钱包设置',
+    settings_sub: 'Manage Your DOGE. Such Options. Wow.',
+    settings_export_key: '🔑 导出私钥',
+    settings_show_seed: '🌱 查看助记词',
+    settings_export_seed: '📦 加密导出助记词',
+    settings_lock: '🔒 锁定钱包',
+    settings_reset: '⚠️ 重置钱包',
+    settings_footer_l1: 'DOGE Wallet v1.0.0',
+    settings_footer_l2: 'Much Open Source. Very Trustworthy. Wow. 🐕',
+  },
+
+  en: {
+    // header
+    header_logo_sub: 'Much Crypto. Very Wow.',
+    btn_refresh_title: 'Refresh',
+    btn_settings_title: 'Settings',
+    btn_lang_title: 'Switch Language / 切换语言',
+    back_btn: '← Back',
+    back_wallet: '← Back to Wallet',
+    back_rp: '← Red Packet',
+
+    // welcome
+    welcome_title: 'Welcome to DOGE Wallet!',
+    welcome_sub: 'Much Wow · Very Crypto · So Decentralized',
+    welcome_meme1: '🌟 wow. such wallet.',
+    welcome_meme2: '💰 very dogecoin. much safe.',
+    welcome_meme3: '🚀 so moon. many features.',
+    welcome_meme4: '✨ amaze. very secure. wow.',
+    welcome_btn_create: '🆕 Create New Wallet',
+    welcome_btn_import: '📥 Import Wallet',
+
+    // create password
+    create_pwd_title: '🔐 Set Wallet Password',
+    create_pwd_sub: 'Used to encrypt local data — keep it safe!',
+    create_pwd_label: 'Password',
+    create_pwd_ph: 'At least 8 characters...',
+    create_pwd_confirm_label: 'Confirm Password',
+    create_pwd_confirm_ph: 'Re-enter password...',
+    create_pwd_btn: '✨ Create Wallet',
+
+    // backup
+    backup_title: '🌱 Backup Mnemonic',
+    backup_sub: 'These 12 words are the only way to recover your wallet',
+    backup_warn_head: 'Write them down on paper and store safely!',
+    backup_warn1_a: 'Mnemonic ',
+    backup_warn1_b: 'lost',
+    backup_warn1_c: ' = wallet permanently gone, ',
+    backup_warn1_d: 'no recovery',
+    backup_warn2_a: 'Mnemonic ',
+    backup_warn2_b: 'leaked',
+    backup_warn2_c: ' = funds stolen, ',
+    backup_warn2_d: 'no refund',
+    backup_warn3: 'Never screenshot, photograph, or save to phone / PC / cloud / chat apps',
+    backup_warn4: 'Never tell anyone — including "support", friends, or tech help',
+    backup_warn5: 'Recommended: write 2 copies and store in different safe places',
+    backup_check_a: 'I have written it on paper and stored safely. I understand once lost or leaked, ',
+    backup_check_b: 'there is no recovery',
+    backup_confirm_btn: '✅ I Have Backed Up',
+
+    // import
+    import_title: '📥 Import Wallet',
+    import_sub: 'Enter mnemonic or private key to recover your wallet',
+    import_seed_label: 'Mnemonic / Private Key',
+    import_seed_ph: 'Enter 12 or 24 words separated by spaces\nor a WIF private key...',
+    import_pwd_label: 'Set New Password',
+    import_pwd_ph: 'Wallet access password...',
+    import_btn: '📥 Import Wallet',
+
+    // unlock
+    unlock_title: 'Unlock Wallet',
+    unlock_sub: 'Much Security. Very Safe. Wow.',
+    unlock_pwd_label: 'Password',
+    unlock_pwd_ph: 'Enter wallet password...',
+    unlock_btn: '🔓 Unlock',
+    unlock_reset_btn: '🔄 Reset Wallet',
+
+    // wallet main
+    wallet_balance_label: 'Total Balance',
+    wallet_address_loading: 'Loading...',
+    wallet_copy: 'Copy',
+    wallet_copied: '✓ Copied',
+    wallet_action_send: 'Send',
+    wallet_action_receive: 'Receive',
+    wallet_action_redpacket: 'Red Packet',
+    wallet_action_refresh: 'Refresh',
+    wallet_tx_title: 'Transactions',
+    wallet_claim_rp: '🧧 Claim',
+    wallet_tx_empty_line1: '🐕 No transactions yet',
+    wallet_tx_empty_line2: 'Such empty. Very quiet. Wow.',
+
+    // send
+    send_title: '📤 Send DOGE',
+    send_sub: 'Much Send. Very Transaction. Wow.',
+    send_to_label: 'Recipient Address',
+    send_to_ph: 'Dogecoin address starting with D...',
+    send_amount_label: 'Amount (DOGE)',
+    send_fee_label: 'Network Fee (DOGE)',
+    send_balance_avail: 'Available:',
+    send_btn: '🚀 Confirm Send',
+
+    // receive
+    recv_title: '📥 Receive DOGE',
+    recv_sub: 'Share your address with the sender',
+    recv_copy_btn: '📋 Copy Address',
+
+    // red packet — send
+    rp_send_title: 'Send DOGE Red Packet',
+    rp_send_sub: 'Much Lucky. Very Wow. So Generous.',
+    rp_amount_label: 'Total Amount (DOGE)',
+    rp_count_label: 'Number of Packets',
+    rp_count_3: '3',
+    rp_count_5: '5',
+    rp_count_8: '8',
+    rp_count_10: '10',
+    rp_greet_label: 'Greeting Message',
+    rp_greet_ph: 'Happy DOGE day, much fortune!',
+    rp_preview_default: 'Fill amount to preview split...',
+    rp_create_btn: '🧧 Create Red Packet',
+
+    // red packet — share
+    rp_share_title: 'Red Packet Created!',
+    rp_share_sub_tmpl: '5 packets · 10 DOGE total',
+    rp_share_id_label: 'Packet ID',
+    rp_share_slots_label: 'Random Split',
+    rp_share_link_hint: 'Share this link with friends:',
+    rp_share_link_loading: 'Generating...',
+    rp_copy_link: '📋 Copy Link',
+    rp_view_status: '📊 View Status',
+
+    // red packet — claim
+    rp_claim_from: 'Red Packet from a Friend',
+    rp_claim_greet: 'Happy DOGE day, much fortune!',
+    rp_claim_meta: '5/5 packets remaining',
+    rp_result_label: 'Lucky pull!',
+    rp_claim_id_label: 'Enter Packet ID',
+    rp_claim_id_ph: 'Paste packet ID...',
+    rp_load_btn: '🔍 Find Packet',
+    rp_claim_btn: '🧧 Grab It!',
+
+    // red packet — status
+    rp_status_title: '🧧 Red Packet Status',
+
+    // settings
+    settings_title: '⚙️ Wallet Settings',
+    settings_sub: 'Manage Your DOGE. Such Options. Wow.',
+    settings_export_key: '🔑 Export Private Key',
+    settings_show_seed: '🌱 View Mnemonic',
+    settings_export_seed: '📦 Export Encrypted Backup',
+    settings_lock: '🔒 Lock Wallet',
+    settings_reset: '⚠️ Reset Wallet',
+    settings_footer_l1: 'DOGE Wallet v1.0.0',
+    settings_footer_l2: 'Much Open Source. Very Trustworthy. Wow. 🐕',
+  },
+};
+
+let currentLang = 'zh';
+
+function detectLang() {
+  try {
+    const saved = localStorage.getItem('doge_lang');
+    if (saved && I18N[saved]) return saved;
+  } catch (e) {}
+  const nav = (navigator.language || 'zh').toLowerCase();
+  return nav.startsWith('zh') ? 'zh' : 'en';
+}
+
+function applyI18n(root) {
+  root = root || document;
+  const dict = I18N[currentLang] || I18N.zh;
+
+  root.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) el.textContent = dict[key];
+  });
+  root.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.getAttribute('data-i18n-ph');
+    if (dict[key] !== undefined) el.setAttribute('placeholder', dict[key]);
+  });
+  root.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const key = el.getAttribute('data-i18n-title');
+    if (dict[key] !== undefined) el.setAttribute('title', dict[key]);
+  });
+}
+
+function setLang(lang) {
+  if (!I18N[lang]) return;
+  currentLang = lang;
+  try { localStorage.setItem('doge_lang', lang); } catch (e) {}
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  applyI18n();
+  const btn = document.getElementById('langBtn');
+  if (btn) btn.textContent = lang === 'zh' ? 'EN' : '中';
+}
+
+function toggleLang() {
+  setLang(currentLang === 'zh' ? 'en' : 'zh');
+}
+
+function t(key, fallback) {
+  const dict = I18N[currentLang] || I18N.zh;
+  return dict[key] !== undefined ? dict[key] : (fallback !== undefined ? fallback : key);
+}
+
+function initI18n() {
+  currentLang = detectLang();
+  setLang(currentLang);
+}
+
+window.I18n = { setLang, toggleLang, t, initI18n, applyI18n, getLang: () => currentLang };
