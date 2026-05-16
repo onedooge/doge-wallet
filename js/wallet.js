@@ -1,7 +1,34 @@
 'use strict';
-const SK={E:'doge_enc',T:'doge_txs'};
+const SK={E:'doge_enc',T:'doge_txs',AL:'doge_auto_lock_min'};
+const SESS_KEY='doge_session';
 let S={locked:true,address:null,balance:0,privKeyHex:null,wif:null,pubKeyHex:null,mnemonic:null,transactions:[],dogePrice:null,priceChange:null};
 const St={get:k=>new Promise(r=>chrome.storage.local.get([k],d=>r(d[k]||null))),set:(k,v)=>new Promise(r=>chrome.storage.local.set({[k]:v},r)),clear:()=>new Promise(r=>chrome.storage.local.clear(r))};
+const Sess={
+  get:k=>new Promise(r=>chrome.storage.session?chrome.storage.session.get([k],d=>r(d[k]||null)):r(null)),
+  set:(k,v)=>new Promise(r=>chrome.storage.session?chrome.storage.session.set({[k]:v},r):r()),
+  remove:k=>new Promise(r=>chrome.storage.session?chrome.storage.session.remove([k],r):r()),
+};
+
+async function getAutoLockMinutes(){return (await St.get(SK.AL))??0;}
+async function setAutoLockMinutes(n){await St.set(SK.AL,n);}
+
+async function saveSession(){
+  if(S.locked||!S.privKeyHex)return;
+  const min=await getAutoLockMinutes();
+  if(min<=0)return; // off
+  await Sess.set(SESS_KEY,{address:S.address,privKeyHex:S.privKeyHex,pubKeyHex:S.pubKeyHex,wif:S.wif,mnemonic:S.mnemonic,unlockedAt:Date.now(),autoLockMin:min});
+}
+async function clearSession(){await Sess.remove(SESS_KEY);}
+
+async function tryRestoreSession(){
+  const d=await Sess.get(SESS_KEY);
+  if(!d)return false;
+  if(Date.now()>d.unlockedAt+d.autoLockMin*60000){await clearSession();return false;}
+  Object.assign(S,{locked:false,address:d.address,privKeyHex:d.privKeyHex,pubKeyHex:d.pubKeyHex,wif:d.wif,mnemonic:d.mnemonic});
+  S.transactions=await St.get(SK.T)||[];
+  fetchBalance().catch(()=>{});
+  return true;
+}
 
 async function createNewWallet(password){
   const{mnemonicWords,mnemonic,privKeyBytes,pubKey,address,wif}=await DogeSecp256k1.createWalletFromEntropy();
@@ -28,11 +55,13 @@ async function unlockWallet(password){
   const wif=DogeSecp256k1.privKeyToWIF(DogeSecp256k1.bytesToBigInt(pb));
   Object.assign(S,{locked:false,address:data.address,privKeyHex:data.privKeyHex,pubKeyHex:data.pubKeyHex,wif,mnemonic:data.mnemonic});
   S.transactions=await St.get(SK.T)||[];
-  await fetchBalance();return data.address;
+  await fetchBalance();
+  saveSession().catch(()=>{});
+  return data.address;
 }
 
-function lockWallet(){Object.assign(S,{locked:true,privKeyHex:null,wif:null,mnemonic:null});}
-async function resetWallet(){lockWallet();Object.assign(S,{address:null,balance:0,transactions:[],pubKeyHex:null});await St.clear();}
+function lockWallet(){Object.assign(S,{locked:true,privKeyHex:null,wif:null,mnemonic:null});clearSession().catch(()=>{});}
+async function resetWallet(){lockWallet();Object.assign(S,{address:null,balance:0,transactions:[],pubKeyHex:null});await St.clear();await clearSession();}
 
 async function fetchBalance(){
   if(!S.address)return;
@@ -75,4 +104,5 @@ window.WalletCore={
   state:S,createNewWallet,importWalletFromMnemonic,unlockWallet,lockWallet,resetWallet,
   fetchBalance,fetchDogePrice,fetchTransactions,sendTransaction,getWIF,
   hasWallet:async()=>!!(await St.get(SK.E)),
+  getAutoLockMinutes,setAutoLockMinutes,saveSession,tryRestoreSession,clearSession,
 };

@@ -643,6 +643,122 @@
     }
     .fee-tier-btn.active .tier-name { color: var(--doge-orange); }
     .fee-tier-btn.active .tier-val  { color: var(--doge-brown); }
+
+    .fee-custom-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 10px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      transition: border-color 0.18s, box-shadow 0.18s;
+    }
+    .fee-custom-row.active {
+      border-color: var(--doge-orange);
+      box-shadow: 0 0 0 3px rgba(244,168,32,0.18);
+    }
+    .fee-custom-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: var(--doge-deep);
+      flex-shrink: 0;
+    }
+    #sendFeeCustom {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      background: transparent;
+      outline: none;
+      padding: 0;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--doge-brown);
+    }
+    #sendFeeCustom::placeholder { color: rgba(160,127,50,0.50); font-weight: 500; }
+    #sendFeeCustom::-webkit-outer-spin-button,
+    #sendFeeCustom::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .fee-custom-unit {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--doge-deep);
+      flex-shrink: 0;
+    }
+
+    /* ===== AUTO-LOCK ===== */
+    .auto-lock-section {
+      margin-bottom: 18px;
+      padding: 14px 14px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      box-shadow: var(--shadow-sm);
+    }
+    .auto-lock-tiers {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin: 8px 0 14px;
+    }
+    .al-btn {
+      padding: 9px 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      background: var(--bg-input);
+      color: var(--doge-deep);
+      cursor: pointer;
+      transition: all 0.18s;
+      font-family: inherit;
+      line-height: 1.2;
+    }
+    .al-btn:hover {
+      border-color: var(--doge-orange);
+      color: var(--doge-brown);
+      background: var(--bg-card-soft);
+    }
+    .al-btn.active {
+      background: var(--bg-card);
+      border-color: var(--doge-orange);
+      color: var(--doge-orange);
+      box-shadow: 0 0 0 2px rgba(244,168,32,0.18);
+    }
+    .hot-wallet-warn {
+      background: linear-gradient(135deg, rgba(217,68,68,0.05), rgba(217,68,68,0.10));
+      border: 1px solid rgba(217,68,68,0.28);
+      border-radius: var(--r-md);
+      padding: 12px 14px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .hot-wallet-warn > strong {
+      display: block;
+      color: var(--danger);
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 4px;
+      letter-spacing: 0.3px;
+    }
+    .hot-wallet-warn p {
+      margin: 0 0 6px 0;
+      color: var(--text-secondary);
+    }
+    .hot-wallet-warn p strong { color: var(--danger); }
+    .hot-wallet-warn ul {
+      margin: 0 0 0 18px;
+      padding: 0;
+    }
+    .hot-wallet-warn li {
+      margin-bottom: 3px;
+      color: var(--text-secondary);
+    }
+    .hot-wallet-warn li strong { color: var(--doge-brown); }
     .fee-tip {
       margin-top: 10px;
       padding: 10px 12px;
@@ -1377,6 +1493,11 @@
             <span class="tier-hint" data-i18n="fee_high_hint">网络繁忙</span>
           </button>
         </div>
+        <div class="fee-custom-row">
+          <span class="fee-custom-label" data-i18n="fee_custom_label">自定义</span>
+          <input type="number" id="sendFeeCustom" min="0.01" step="0.1" data-i18n-ph="fee_custom_ph" placeholder="输入金额..." />
+          <span class="fee-custom-unit">DOGE</span>
+        </div>
         <input type="hidden" id="sendFee" value="0.5" />
         <div class="fee-tip" data-i18n="send_fee_tip">💡 网络繁忙时建议选高档；手续费过低可能导致交易长时间不被确认。建议范围 0.1–1 DOGE。</div>
       </div>
@@ -1540,6 +1661,28 @@
     <div class="form-section">
       <div class="form-title" data-i18n="settings_title">⚙️ 钱包设置</div>
       <div class="form-sub" data-i18n="settings_sub">Manage Your DOGE. Such Options. Wow.</div>
+
+      <!-- Auto-lock + hot wallet warning -->
+      <div class="auto-lock-section">
+        <label class="input-label" data-i18n="auto_lock_label">自动锁定</label>
+        <div class="auto-lock-tiers" id="autoLockTiers">
+          <button type="button" class="al-btn active" data-min="0"  data-i18n="auto_lock_off">关闭即锁</button>
+          <button type="button" class="al-btn"        data-min="5"  data-i18n="auto_lock_5m">5 分钟</button>
+          <button type="button" class="al-btn"        data-min="15" data-i18n="auto_lock_15m">15 分钟</button>
+          <button type="button" class="al-btn"        data-min="30" data-i18n="auto_lock_30m">30 分钟</button>
+          <button type="button" class="al-btn"        data-min="60" data-i18n="auto_lock_60m">60 分钟</button>
+        </div>
+
+        <div class="hot-wallet-warn">
+          <strong data-i18n="hot_wallet_title">⚠️ 安全提示</strong>
+          <p data-i18n="hot_wallet_intro">本钱包是<strong>热钱包</strong>，适合小额日常交互。</p>
+          <ul>
+            <li data-i18n="hot_wallet_tip1">资金较多 → 建议「关闭即锁」，每次输入密码</li>
+            <li data-i18n="hot_wallet_tip2">小额日常 → 可设较长免密（5~60 分钟）</li>
+            <li data-i18n="hot_wallet_tip3">大额资产请使用<strong>硬件钱包</strong>或交易所</li>
+          </ul>
+        </div>
+      </div>
 
       <div style="margin-bottom:12px">
         <button class="setup-btn btn-secondary" id="btnExportKey" data-i18n="settings_export_key" style="margin-bottom:10px">

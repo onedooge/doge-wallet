@@ -50,12 +50,29 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ---- Send page ----
   document.getElementById('btnBackFromSend').addEventListener('click', () => showPage('page-wallet'));
   document.getElementById('btnSendDoge').addEventListener('click', sendDoge);
+  const sendFeeHidden = document.getElementById('sendFee');
+  const sendFeeCustom = document.getElementById('sendFeeCustom');
+  const sendFeeCustomRow = sendFeeCustom.parentElement;
+
   document.querySelectorAll('.fee-tier-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.fee-tier-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      document.getElementById('sendFee').value = btn.getAttribute('data-fee');
+      sendFeeHidden.value = btn.getAttribute('data-fee');
+      sendFeeCustom.value = '';
+      sendFeeCustomRow.classList.remove('active');
     });
+  });
+
+  sendFeeCustom.addEventListener('input', () => {
+    const v = parseFloat(sendFeeCustom.value);
+    if (!isNaN(v) && v > 0) {
+      document.querySelectorAll('.fee-tier-btn').forEach(b => b.classList.remove('active'));
+      sendFeeHidden.value = v;
+      sendFeeCustomRow.classList.add('active');
+    } else {
+      sendFeeCustomRow.classList.remove('active');
+    }
   });
 
   // ---- Receive page ----
@@ -74,11 +91,30 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('btnLock').addEventListener('click', lockWallet);
   document.getElementById('btnConfirmReset').addEventListener('click', confirmReset);
 
-  // ---- Init: check if wallet exists ----
+  // Auto-lock tier buttons
+  document.querySelectorAll('#autoLockTiers .al-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const min = parseInt(btn.getAttribute('data-min'), 10);
+      await WalletCore.setAutoLockMinutes(min);
+      document.querySelectorAll('#autoLockTiers .al-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      // If just turned on while unlocked, save session immediately so it takes effect now
+      if (min > 0 && !WalletCore.state.locked) WalletCore.saveSession();
+      // If turned off, clear any existing session
+      if (min === 0) WalletCore.clearSession();
+    });
+  });
+
+  // ---- Init: check if wallet exists + try session restore ----
   const hasWallet = await WalletCore.hasWallet();
   if (hasWallet) {
-    showPage('page-unlock');
     document.getElementById('mainHeader').style.display = 'flex';
+    const restored = await WalletCore.tryRestoreSession();
+    if (restored) {
+      showPage('page-wallet');
+    } else {
+      showPage('page-unlock');
+    }
   } else {
     showPage('page-welcome');
   }
@@ -115,7 +151,16 @@ function showPage(pageId, mode) {
     updateReceivePage();
   } else if (pageId === 'page-send') {
     document.getElementById('sendMaxBalance').textContent = WalletCore.state.balance.toFixed(2);
+  } else if (pageId === 'page-settings') {
+    syncAutoLockUI();
   }
+}
+
+async function syncAutoLockUI() {
+  const min = await WalletCore.getAutoLockMinutes();
+  document.querySelectorAll('#autoLockTiers .al-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.getAttribute('data-min'), 10) === min);
+  });
 }
 
 

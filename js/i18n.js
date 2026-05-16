@@ -94,6 +94,8 @@ const I18N = {
     fee_low_hint: '网络空闲',
     fee_mid_hint: '推荐',
     fee_high_hint: '网络繁忙',
+    fee_custom_label: '自定义',
+    fee_custom_ph: '输入金额...',
     send_fee_tip: '💡 网络繁忙时建议选高档；手续费过低可能导致交易长时间不被确认。建议范围 0.1–1 DOGE。',
     send_balance_avail: '可用余额:',
     send_btn: '🚀 确认发送',
@@ -143,6 +145,17 @@ const I18N = {
     // settings
     settings_title: '⚙️ 钱包设置',
     settings_sub: 'Manage Your DOGE. Such Options. Wow.',
+    auto_lock_label: '自动锁定',
+    auto_lock_off: '关闭即锁',
+    auto_lock_5m: '5 分钟',
+    auto_lock_15m: '15 分钟',
+    auto_lock_30m: '30 分钟',
+    auto_lock_60m: '60 分钟',
+    hot_wallet_title: '⚠️ 安全提示 · 这是热钱包',
+    hot_wallet_intro: '本钱包适合<strong>小额日常交互</strong>。',
+    hot_wallet_tip1: '资金较多 → 建议「关闭即锁」，每次输入密码',
+    hot_wallet_tip2: '小额日常 → 可设较长免密（5~60 分钟）',
+    hot_wallet_tip3: '大额资产请使用 <strong>硬件钱包</strong> 或交易所',
     settings_export_key: '🔑 导出私钥',
     settings_show_seed: '🌱 查看助记词',
     settings_export_seed: '📦 加密导出助记词',
@@ -316,6 +329,8 @@ const I18N = {
     fee_low_hint: 'Low traffic',
     fee_mid_hint: 'Recommended',
     fee_high_hint: 'Busy network',
+    fee_custom_label: 'Custom',
+    fee_custom_ph: 'Enter amount...',
     send_fee_tip: '💡 Pick the high tier when the network is busy. Too-low fees may leave the transaction unconfirmed for a long time. Recommended range: 0.1–1 DOGE.',
     send_balance_avail: 'Available:',
     send_btn: '🚀 Confirm Send',
@@ -365,6 +380,17 @@ const I18N = {
     // settings
     settings_title: '⚙️ Wallet Settings',
     settings_sub: 'Manage Your DOGE. Such Options. Wow.',
+    auto_lock_label: 'Auto-lock',
+    auto_lock_off: 'Lock on close',
+    auto_lock_5m: '5 min',
+    auto_lock_15m: '15 min',
+    auto_lock_30m: '30 min',
+    auto_lock_60m: '60 min',
+    hot_wallet_title: '⚠️ Security · This is a Hot Wallet',
+    hot_wallet_intro: 'This wallet is best for <strong>small daily transactions</strong>.',
+    hot_wallet_tip1: 'Larger funds → choose "Lock on close" and enter password each time',
+    hot_wallet_tip2: 'Small daily use → longer auto-lock OK (5–60 min)',
+    hot_wallet_tip3: 'For significant holdings, use a <strong>hardware wallet</strong> or exchange',
     settings_export_key: '🔑 Export Private Key',
     settings_show_seed: '🌱 View Mnemonic',
     settings_export_seed: '📦 Export Encrypted Backup',
@@ -465,7 +491,11 @@ function applyI18n(root) {
 
   root.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
-    if (dict[key] !== undefined) el.textContent = dict[key];
+    const v = dict[key];
+    if (v === undefined) return;
+    // Dict values may contain inline HTML (e.g. <strong>) — render as HTML if detected.
+    if (typeof v === 'string' && v.indexOf('<') !== -1) el.innerHTML = v;
+    else el.textContent = v;
   });
   root.querySelectorAll('[data-i18n-ph]').forEach(el => {
     const key = el.getAttribute('data-i18n-ph');
