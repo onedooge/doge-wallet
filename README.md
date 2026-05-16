@@ -255,7 +255,6 @@ Settings
 - [ ] Red packet cross-device sync (IPFS or relay)
 - [ ] QR code scanner for receiving
 - [ ] Hardware wallet support (Ledger)
-- [ ] Token support (Doginals / DRC-20)
 
 ---
 
