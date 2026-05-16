@@ -57,18 +57,17 @@ function updateRPPreview() {
   const previewEl = document.getElementById('rpPreviewText');
 
   if (amount <= 0 || count <= 0) {
-    previewEl.textContent = '填写金额预览分配...';
+    previewEl.textContent = I18n.t('rp_preview_default');
     return;
   }
   if (amount / count < 0.01) {
-    previewEl.textContent = '⚠️ 每人最少 0.01 DOGE，请增加金额或减少人数';
+    previewEl.textContent = I18n.t('rp_min_warn');
     return;
   }
   const slots = RedPacket.splitAmount(amount, count);
   const min = Math.min(...slots).toFixed(2);
   const max = Math.max(...slots).toFixed(2);
-  previewEl.textContent =
-    `🎲 预览 ${count} 个红包：最少 ${min} DOGE，最多 ${max} DOGE（随机）`;
+  previewEl.textContent = I18n.tt('rp_preview_tmpl', { count, min, max });
 }
 
 // ── Create red packet ──────────────────────────────────────────────────────
@@ -76,29 +75,29 @@ async function handleCreateRP() {
   const amount   = parseFloat(document.getElementById('rpAmount').value);
   const count    = parseInt(document.getElementById('rpCount').value) || rpCount;
   const greeting = document.getElementById('rpGreeting').value.trim() ||
-                   '恭喜发财，DOGE大吉！';
+                   I18n.t('rp_claim_greet');
   const sender   = WalletCore.state.address;
 
-  if (!sender) { showToast('❌ 请先解锁钱包', true); return; }
-  if (!amount || amount <= 0) { showToast('⚠️ 请输入红包金额', true); return; }
+  if (!sender) { showToast(I18n.t('rp_toast_locked'), true); return; }
+  if (!amount || amount <= 0) { showToast(I18n.t('rp_toast_need_amount'), true); return; }
   if (amount > WalletCore.state.balance) {
-    showToast(`❌ 余额不足 (余额: ${WalletCore.state.balance.toFixed(2)} DOGE)`, true);
+    showToast(I18n.tt('rp_toast_insufficient_tmpl', { bal: WalletCore.state.balance.toFixed(2) }), true);
     return;
   }
 
   const btn = document.getElementById('btnCreateRP');
-  btn.textContent = '🔄 创建中...';
+  btn.textContent = I18n.t('rp_toast_creating');
   btn.disabled = true;
 
   try {
     const packet = await RedPacket.createRedPacket(amount, count, greeting, sender);
     currentRPData = packet;
     showRPSharePage(packet);
-    showToast('🧧 红包创建成功！Much Lucky!');
+    showToast(I18n.t('rp_toast_create_success'));
   } catch (e) {
     showToast('❌ ' + e.message, true);
   } finally {
-    btn.textContent = '🧧 创建红包';
+    btn.textContent = I18n.t('rp_create_btn');
     btn.disabled = false;
   }
 }
@@ -109,7 +108,7 @@ function showRPSharePage(packet) {
 
   document.getElementById('rpShareTitle').textContent = `🧧 "${packet.greeting}"`;
   document.getElementById('rpShareSub').textContent =
-    `共 ${packet.count} 个，总额 ${packet.total} DOGE`;
+    I18n.tt('rp_share_sub_tmpl_dyn', { count: packet.count, total: packet.total });
   document.getElementById('rpShareId').textContent = packet.id;
 
   // Slot badges
@@ -126,9 +125,7 @@ function showRPSharePage(packet) {
 }
 
 function buildShareLink(packetId) {
-  // Use a chrome extension deep link or simple encoded URL
-  // In practice, share the ID and let recipient enter it manually
-  return `DOGE红包ID: ${packetId}  |  在 DOGE Wallet 插件中输入此ID领取`;
+  return I18n.tt('rp_share_text_tmpl', { id: packetId });
 }
 
 // ── Copy link ──────────────────────────────────────────────────────────────
@@ -137,9 +134,9 @@ async function copyRPLink() {
   const link = buildShareLink(currentRPData.id);
   try {
     await navigator.clipboard.writeText(link);
-    showToast('📋 红包链接已复制！');
+    showToast(I18n.t('rp_toast_link_copied'));
   } catch(e) {
-    showToast('❌ 复制失败', true);
+    showToast(I18n.t('toast_copy_fail'), true);
   }
 }
 
@@ -153,11 +150,11 @@ function showRPStatus(packet) {
       <div style="font-size:13px;font-weight:700;color:#FFD700;margin-bottom:6px">🧧 ${packet.greeting}</div>
       <div style="font-size:11px;color:var(--text-muted)">ID: <span style="font-family:monospace;color:var(--doge-bright)">${packet.id}</span></div>
       <div style="font-size:11px;color:var(--text-muted);margin-top:4px">
-        进度: <span style="color:var(--success);font-weight:700">${summary.claimed}/${summary.total}</span> 已领取 ·
-        总额: <span style="color:var(--doge-bright);font-weight:700">${packet.total} DOGE</span>
+        ${I18n.t('rp_progress_label')} <span style="color:var(--success);font-weight:700">${summary.claimed}/${summary.total}</span> ${I18n.t('rp_claimed_word')} ·
+        ${I18n.t('rp_total_label')} <span style="color:var(--doge-bright);font-weight:700">${packet.total} DOGE</span>
       </div>
-      ${summary.isFullyClaimed ? '<div style="font-size:11px;color:var(--success);margin-top:4px">✅ 红包已领完</div>' : ''}
-      ${summary.isExpired ? '<div style="font-size:11px;color:var(--danger);margin-top:4px">⏰ 红包已过期</div>' : ''}
+      ${summary.isFullyClaimed ? `<div style="font-size:11px;color:var(--success);margin-top:4px">${I18n.t('rp_fully_claimed')}</div>` : ''}
+      ${summary.isExpired ? `<div style="font-size:11px;color:var(--danger);margin-top:4px">${I18n.t('rp_expired')}</div>` : ''}
     </div>
   `;
 
@@ -166,11 +163,11 @@ function showRPStatus(packet) {
       <div class="rp-status-num ${s.claimed ? 'taken' : 'open'}">${i+1}</div>
       <div style="flex:1">
         <div class="rp-status-amt">${s.amount.toFixed(2)} DOGE</div>
-        <div class="rp-status-who">${s.claimed ? s.claimedByShort || '已领取' : '等待领取...'}</div>
+        <div class="rp-status-who">${s.claimed ? s.claimedByShort || I18n.t('rp_claimed_short') : I18n.t('rp_waiting')}</div>
         ${s.txHash && !s.txHash.startsWith('PENDING') ?
           `<div style="font-size:9px;color:var(--text-muted);font-family:monospace">${s.txHash.slice(0,16)}...</div>` : ''}
       </div>
-      <div class="rp-status-tag ${s.claimed ? 'taken' : 'open'}">${s.claimed ? '✓ 已领' : '未领'}</div>
+      <div class="rp-status-tag ${s.claimed ? 'taken' : 'open'}">${s.claimed ? I18n.t('rp_claimed_tag') : I18n.t('rp_open_tag')}</div>
     </div>
   `).join('');
 
@@ -181,10 +178,10 @@ function showRPStatus(packet) {
 // ── Load red packet for claiming ───────────────────────────────────────────
 async function handleLoadRP() {
   const id = document.getElementById('rpClaimId').value.trim();
-  if (!id) { showToast('⚠️ 请输入红包 ID', true); return; }
+  if (!id) { showToast(I18n.t('rp_toast_need_id'), true); return; }
 
   const btn = document.getElementById('btnLoadRP');
-  btn.textContent = '🔍 查询中...';
+  btn.textContent = I18n.t('rp_toast_searching');
   btn.disabled = true;
 
   try {
@@ -194,10 +191,10 @@ async function handleLoadRP() {
 
     // Update claim UI
     document.getElementById('rpClaimFrom').textContent =
-      `来自 ${packet.senderShort} 的红包`;
+      I18n.tt('rp_claim_from_tmpl', { sender: packet.senderShort });
     document.getElementById('rpClaimGreeting').textContent = packet.greeting;
     document.getElementById('rpClaimMeta').textContent =
-      `还剩 ${summary.remaining}/${summary.total} 个未领取 · 共 ${packet.total} DOGE`;
+      I18n.tt('rp_claim_meta_tmpl', { remain: summary.remaining, total: summary.total, amount: packet.total });
 
     // Render slot grid
     renderClaimSlots(packet);
@@ -206,13 +203,13 @@ async function handleLoadRP() {
     const claimBtn = document.getElementById('btnClaimRP');
     if (summary.remaining === 0) {
       claimBtn.style.display = 'none';
-      showToast('😢 红包已被领完', true);
+      showToast(I18n.t('rp_toast_taken_all'), true);
     } else if (summary.isExpired) {
       claimBtn.style.display = 'none';
-      showToast('⏰ 红包已过期', true);
+      showToast(I18n.t('rp_toast_expired'), true);
     } else if (myAddr && RedPacket.hasAlreadyClaimed(packet, myAddr)) {
       claimBtn.style.display = 'none';
-      showToast('🐕 您已经领过这个红包了', true);
+      showToast(I18n.t('rp_toast_already_claimed'), true);
     } else {
       claimBtn.style.display = 'block';
       claimBtn.dataset.packetId = id;
@@ -221,11 +218,11 @@ async function handleLoadRP() {
     // Reset result
     document.getElementById('rpClaimResult').style.display = 'none';
 
-    showToast(`✅ 找到红包！${summary.remaining}/${summary.total} 个未领取`);
+    showToast(I18n.tt('rp_toast_found_tmpl', { remain: summary.remaining, total: summary.total }));
   } catch (e) {
     showToast('❌ ' + e.message, true);
   } finally {
-    btn.textContent = '🔍 查询红包';
+    btn.textContent = I18n.t('rp_load_btn');
     btn.disabled = false;
   }
 }
@@ -236,7 +233,7 @@ function renderClaimSlots(packet) {
     <div class="rp-claim-slot ${s.claimed ? 'claimed' : ''}">
       <div class="slot-num">#${i+1}</div>
       <div class="slot-amt">${s.claimed ? s.amount.toFixed(2) : '?'}</div>
-      <div class="slot-who">${s.claimed ? (s.claimedByShort || '已领') : '未领'}</div>
+      <div class="slot-who">${s.claimed ? (s.claimedByShort || I18n.t('rp_slot_claimed')) : I18n.t('rp_slot_open')}</div>
     </div>
   `).join('');
 }
@@ -247,12 +244,12 @@ async function handleClaimRP() {
   const myAddr   = WalletCore.state.address;
 
   if (!myAddr) {
-    showToast('❌ 请先解锁钱包', true);
+    showToast(I18n.t('rp_toast_locked'), true);
     return;
   }
 
   const btn = document.getElementById('btnClaimRP');
-  btn.textContent = '🔄 领取中...';
+  btn.textContent = I18n.t('rp_toast_claiming');
   btn.disabled = true;
 
   try {
@@ -262,11 +259,10 @@ async function handleClaimRP() {
     const resultEl = document.getElementById('rpClaimResult');
     document.getElementById('rpResultAmount').textContent = `+${slot.amount.toFixed(2)} DOGE`;
 
-    // Pick a lucky phrase
-    const phrases = [
-      '手气不错！','运气爆棚！','wow. very lucky!','Much DOGE!',
-      'so fortune. wow!','手气王！🏆','暗藏好运！','Today is your day!',
-    ];
+    // Pick a lucky phrase (bilingual mix — visual variety, no need to translate)
+    const phrases = I18n.getLang() === 'zh'
+      ? ['手气不错！','运气爆棚！','wow. very lucky!','Much DOGE!','so fortune. wow!','手气王！🏆','暗藏好运！','Today is your day!']
+      : ['Lucky pull!','On fire!','wow. very lucky!','Much DOGE!','so fortune. wow!','Top grab! 🏆','Hidden treasure!','Today is your day!'];
     resultEl.querySelector('.rp-result-label').textContent =
       phrases[Math.floor(Math.random() * phrases.length)];
     resultEl.style.display = 'block';
@@ -279,10 +275,10 @@ async function handleClaimRP() {
     // Refresh balance
     setTimeout(() => WalletCore.fetchBalance().then(() => updateWalletUI()).catch(() => {}), 3000);
 
-    showToast(`🎉 抢到 ${slot.amount.toFixed(2)} DOGE！Much Lucky!`);
+    showToast(I18n.tt('rp_toast_grab_success_tmpl', { amount: slot.amount.toFixed(2) }));
   } catch (e) {
     showToast('❌ ' + e.message, true);
-    btn.textContent = '🧧 抢红包！';
+    btn.textContent = I18n.t('rp_claim_btn');
     btn.disabled = false;
   }
 }

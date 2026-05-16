@@ -50,6 +50,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ---- Send page ----
   document.getElementById('btnBackFromSend').addEventListener('click', () => showPage('page-wallet'));
   document.getElementById('btnSendDoge').addEventListener('click', sendDoge);
+  document.querySelectorAll('.fee-tier-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.fee-tier-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('sendFee').value = btn.getAttribute('data-fee');
+    });
+  });
 
   // ---- Receive page ----
   document.getElementById('btnBackFromReceive').addEventListener('click', () => showPage('page-wallet'));
@@ -119,15 +126,15 @@ async function createWallet() {
   const confirm = document.getElementById('confirmPwd').value;
 
   if (pwd.length < 8) {
-    showToast('⚠️ 密码至少需要8位字符', true);
+    showToast(I18n.t('toast_pwd_min8'), true);
     return;
   }
   if (pwd !== confirm) {
-    showToast('❌ 两次密码不一致', true);
+    showToast(I18n.t('toast_pwd_mismatch'), true);
     return;
   }
 
-  showToast('🔄 创建钱包中...', false, 3000);
+  showToast(I18n.t('toast_creating'), false, 3000);
 
   try {
     const result = await WalletCore.createNewWallet(pwd);
@@ -137,7 +144,7 @@ async function createWallet() {
     document.getElementById('mainHeader').style.display = 'none';
   } catch (e) {
     console.error('createWallet error:', e);
-    showToast('❌ 创建失败: ' + e.message, true);
+    showToast(I18n.t('toast_create_fail') + e.message, true);
   }
 };
 
@@ -152,7 +159,7 @@ function displaySeedWords(words) {
 }
 
 function confirmBackup() {
-  if (!confirm('⚠️ 最后确认\n\n你已经把 12 个助记词手写抄录到纸上并妥善保管了吗？\n\n点击"确定"后将关闭此页，今后只能通过设置 → 查看助记词重新查看。')) {
+  if (!confirm(I18n.t('confirm_backup_final'))) {
     return;
   }
   // Reset check state for next time
@@ -163,7 +170,7 @@ function confirmBackup() {
   pendingMnemonic = null;
   document.getElementById('mainHeader').style.display = 'flex';
   showPage('page-wallet');
-  showToast('🎉 钱包创建成功！Much Wow!');
+  showToast(I18n.t('toast_create_success'));
   loadPriceData();
 };
 
@@ -174,21 +181,21 @@ async function importWallet() {
   const pwd = document.getElementById('importPwd').value;
 
   if (!seed) {
-    showToast('⚠️ 请输入助记词或私钥', true);
+    showToast(I18n.t('toast_need_seed'), true);
     return;
   }
   if (pwd.length < 8) {
-    showToast('⚠️ 密码至少需要8位字符', true);
+    showToast(I18n.t('toast_pwd_min8'), true);
     return;
   }
 
-  showToast('🔄 导入中...', false, 3000);
+  showToast(I18n.t('toast_importing'), false, 3000);
 
   try {
     await WalletCore.importWalletFromMnemonic(seed, pwd);
     document.getElementById('mainHeader').style.display = 'flex';
     showPage('page-wallet');
-    showToast('✅ 钱包导入成功！');
+    showToast(I18n.t('toast_import_success'));
     loadPriceData();
   } catch (e) {
     showToast('❌ ' + e.message, true);
@@ -200,17 +207,17 @@ async function importWallet() {
 async function unlockWallet() {
   const pwd = document.getElementById('unlockPwd').value;
   if (!pwd) {
-    showToast('⚠️ 请输入密码', true);
+    showToast(I18n.t('toast_need_pwd'), true);
     return;
   }
 
-  showToast('🔄 解锁中...', false, 2000);
+  showToast(I18n.t('toast_unlocking'), false, 2000);
 
   try {
     await WalletCore.unlockWallet(pwd);
     document.getElementById('unlockPwd').value = '';
     showPage('page-wallet');
-    showToast('🔓 已解锁！Such Security. Wow.');
+    showToast(I18n.t('toast_unlocked'));
     loadPriceData();
   } catch (e) {
     showToast('❌ ' + e.message, true);
@@ -218,11 +225,11 @@ async function unlockWallet() {
 };
 
 function resetWallet() {
-  if (confirm('⚠️ 确定要重置钱包吗？\n\n所有数据将被删除，请确保已备份助记词！')) {
+  if (confirm(I18n.t('confirm_reset_unlock'))) {
     WalletCore.resetWallet();
     showPage('page-welcome');
     document.getElementById('mainHeader').style.display = 'none';
-    showToast('🔄 钱包已重置');
+    showToast(I18n.t('toast_reset_done'));
   }
 };
 
@@ -259,8 +266,8 @@ function renderTransactions(txs) {
     return;
   }
 
-  const recvLabel = I18n.getLang() === 'zh' ? '收到' : 'Received';
-  const sendLabel = I18n.getLang() === 'zh' ? '发送' : 'Sent';
+  const recvLabel = I18n.t('tx_recv_label');
+  const sendLabel = I18n.t('tx_send_label');
   list.innerHTML = txs.map(tx => `
     <div class="tx-item">
       <div class="tx-icon ${tx.type}">${tx.type === 'recv' ? '⬇️' : '⬆️'}</div>
@@ -284,18 +291,18 @@ async function sendDoge() {
   const fee = document.getElementById('sendFee').value;
 
   if (!to || !amount) {
-    showToast('⚠️ 请填写收款地址和金额', true);
+    showToast(I18n.t('toast_need_addr_amt'), true);
     return;
   }
 
-  showToast('🔄 发送中...', false, 3000);
+  showToast(I18n.t('toast_sending'), false, 3000);
 
   try {
     const txHash = await WalletCore.sendTransaction(to, amount, fee);
     document.getElementById('sendTo').value = '';
     document.getElementById('sendAmount').value = '';
     showPage('page-wallet');
-    showToast('🚀 发送成功！Much Transaction. Wow!');
+    showToast(I18n.t('toast_send_success'));
     updateWalletUI();
   } catch (e) {
     showToast('❌ ' + e.message, true);
@@ -356,7 +363,7 @@ async function loadPriceData() {
 // ===== REFRESH =====
 
 async function refreshBalance() {
-  showToast('🔄 刷新中...', false, 2000);
+  showToast(I18n.t('toast_refreshing'), false, 2000);
   try {
     await Promise.all([
       WalletCore.fetchBalance(),
@@ -365,9 +372,9 @@ async function refreshBalance() {
     ]);
     updateWalletUI();
     await loadPriceData();
-    showToast('✅ 刷新成功！');
+    showToast(I18n.t('toast_refresh_ok'));
   } catch (e) {
-    showToast('⚠️ 网络连接问题，请稍后重试', true);
+    showToast(I18n.t('toast_network_issue'), true);
   }
 };
 
@@ -379,14 +386,14 @@ async function copyAddress() {
   try {
     await navigator.clipboard.writeText(address);
     const btn = document.getElementById('copyAddrBtn');
-    btn.textContent = '✓ 已复制';
+    btn.textContent = I18n.t('wallet_copied');
     btn.classList.add('copied');
     setTimeout(() => {
-      btn.textContent = '复制';
+      btn.textContent = I18n.t('wallet_copy');
       btn.classList.remove('copied');
     }, 2000);
   } catch (e) {
-    showToast('❌ 复制失败', true);
+    showToast(I18n.t('toast_copy_fail'), true);
   }
 };
 
@@ -395,9 +402,9 @@ async function copyReceiveAddress() {
   if (!address) return;
   try {
     await navigator.clipboard.writeText(address);
-    showToast('📋 地址已复制！');
+    showToast(I18n.t('toast_addr_copied'));
   } catch (e) {
-    showToast('❌ 复制失败', true);
+    showToast(I18n.t('toast_copy_fail'), true);
   }
 };
 
@@ -406,9 +413,9 @@ async function copyReceiveAddress() {
 async function exportPrivKey() {
   try {
     const wif = WalletCore.getWIF();
-    if (confirm('⚠️ 私钥非常敏感！确定要查看吗？\n\n切勿分享给任何人！')) {
+    if (confirm(I18n.t('confirm_export_key'))) {
       await navigator.clipboard.writeText(wif);
-      showToast('🔑 WIF私钥已复制到剪贴板（请立即清除）');
+      showToast(I18n.t('toast_wif_copied'));
     }
   } catch (e) {
     showToast('❌ ' + e.message, true);
@@ -418,21 +425,14 @@ async function exportPrivKey() {
 async function exportEncryptedMnemonic() {
   const mnemonic = WalletCore.state.mnemonic;
   if (!mnemonic) {
-    showToast('❌ 钱包已锁定，请先解锁', true);
+    showToast(I18n.t('toast_locked_first'), true);
     return;
   }
 
-  const proceed = confirm(
-    '⚠️ 加密导出助记词\n\n' +
-    '风险提示：\n' +
-    '• 联网设备存在被盗、勒索软件加密、云同步外泄等风险\n' +
-    '• 文件即使用密码加密，弱密码仍可能被暴力破解\n' +
-    '• 最安全的方式是纸笔抄写后离线保管\n\n' +
-    '下一步需要输入钱包密码进行加密。\n确定继续？'
-  );
+  const proceed = confirm(I18n.t('confirm_export_enc'));
   if (!proceed) return;
 
-  const pwd = prompt('请输入钱包密码（用于加密导出文件）：');
+  const pwd = prompt(I18n.t('prompt_export_pwd'));
   if (pwd === null || pwd === '') return;
 
   // Verify password by attempting to decrypt stored wallet
@@ -443,7 +443,7 @@ async function exportEncryptedMnemonic() {
     if (!enc) throw new Error('no wallet');
     await DogeSecp256k1.decryptData(enc, pwd);
   } catch (e) {
-    showToast('❌ 密码错误', true);
+    showToast(I18n.t('toast_pwd_wrong'), true);
     return;
   }
 
@@ -471,16 +471,16 @@ async function exportEncryptedMnemonic() {
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 
-  showToast('✅ 已加密导出，请妥善保管');
+  showToast(I18n.t('toast_export_done'));
 }
 
 function showSeedPhrase() {
   const mnemonic = WalletCore.state.mnemonic;
   if (!mnemonic) {
-    showToast('❌ 钱包已锁定，请先解锁', true);
+    showToast(I18n.t('toast_locked_first'), true);
     return;
   }
-  if (confirm('⚠️ 即将显示助记词！\n\n确保周围没有他人。切勿截图！')) {
+  if (confirm(I18n.t('confirm_show_seed'))) {
     const words = typeof mnemonic === 'string' ? mnemonic.split(' ') : mnemonic;
     displaySeedWords(words);
     showPage('page-backup');
@@ -491,11 +491,11 @@ function showSeedPhrase() {
 function lockWallet() {
   WalletCore.lockWallet();
   showPage('page-unlock');
-  showToast('🔒 钱包已锁定');
+  showToast(I18n.t('toast_lock_done'));
 };
 
 function confirmReset() {
-  if (confirm('⚠️ 危险操作！\n\n重置将删除所有数据。\n确保已备份助记词！\n\n确定重置？')) {
+  if (confirm(I18n.t('confirm_reset_strong'))) {
     window.resetWallet();
   }
 };
