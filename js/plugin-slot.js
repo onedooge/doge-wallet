@@ -86,13 +86,13 @@
   .slot-sub { font-size:9px; color:rgba(255,253,243,.85); margin-top:1px; }
   .slot-back { position:absolute; left:10px; top:50%; transform:translateY(-50%); width:26px; height:26px; border:none; border-radius:8px; background:rgba(255,255,255,.28); color:#FFFDF3; font-size:15px; font-weight:800; line-height:1; cursor:pointer; }
   .slot-back:hover { background:rgba(255,255,255,.5); }
-  .slot-credit-card { margin:9px 16px; padding:9px 16px; text-align:center; background:linear-gradient(155deg,#FFFFFF,#FFF6D6 70%,#FCE7A2); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); }
-  .slot-credit-label { font-size:9px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--doge-deep); }
-  .slot-credit-amt { font-family:'Impact','Arial Black',sans-serif; font-size:27px; color:var(--doge-brown); line-height:1.05; }
+  .slot-credit-card { margin:9px 16px; padding:10px 16px 8px; text-align:center; background:linear-gradient(155deg,#FFFFFF,#FFF6D6 70%,#FCE7A2); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); }
+  .slot-credit-label { font-size:9px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--doge-deep); margin-bottom:4px; }
+  .slot-credit-amt { font-family:'Impact','Arial Black',sans-serif; font-size:30px; color:var(--doge-brown); line-height:1; letter-spacing:.5px; }
   .slot-credit-note { font-size:9px; color:var(--text-muted); }
   .slot-stats { font-size:9px; color:var(--text-secondary); margin-top:3px; }
-  .slot-reels { display:flex; gap:9px; justify-content:center; padding:11px; margin:2px 16px 0; background:#3D2800; border-radius:var(--r-lg); border:3px solid var(--doge-gold); box-shadow:inset 0 2px 12px rgba(0,0,0,.45); }
-  .slot-reel { width:66px; height:66px; line-height:66px; text-align:center; font-size:40px; background:#FFFDF3; border-radius:10px; box-shadow:inset 0 0 8px rgba(0,0,0,.15); overflow:hidden; }
+  .slot-reels { display:flex; gap:10px; justify-content:center; padding:10px 12px; margin:2px 16px 0; background:#3D2800; border-radius:var(--r-lg); border:3px solid var(--doge-gold); box-shadow:inset 0 2px 12px rgba(0,0,0,.45); }
+  .slot-reel { flex:1; max-width:76px; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; font-size:40px; background:#FFFDF3; border-radius:10px; box-shadow:inset 0 0 8px rgba(0,0,0,.15); overflow:hidden; }
   .slot-reel.spinning { animation:slot-shake .3s linear infinite; }
   @keyframes slot-shake { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
   .slot-reels.win .slot-reel { animation:slot-pop .5s ease; box-shadow:0 0 16px var(--doge-bright), inset 0 0 8px rgba(0,0,0,.15); }
@@ -108,9 +108,9 @@
   .slot-spin-btn { display:block; width:calc(100% - 32px); margin:4px 16px 10px; padding:12px; border:none; border-radius:var(--r-md); background:linear-gradient(135deg,#E45757,#C9352C); color:#FFFDF3; font-family:'Impact','Arial Black',sans-serif; font-size:19px; letter-spacing:1px; cursor:pointer; box-shadow:0 5px 16px rgba(201,53,44,.42); transition:all .18s; }
   .slot-spin-btn:hover { transform:translateY(-2px); box-shadow:0 7px 18px rgba(201,53,44,.55); }
   .slot-spin-btn:disabled { filter:grayscale(.5); cursor:not-allowed; transform:none; }
-  .slot-tools { display:flex; gap:8px; justify-content:center; padding:0 16px 6px; }
-  .slot-tools button { flex:1; background:var(--bg-card); border:1px solid var(--border-strong); border-radius:var(--r-sm); color:var(--doge-deep); font-size:10px; font-weight:700; padding:6px; cursor:pointer; }
-  .slot-tools button:hover { background:var(--bg-card-soft); border-color:var(--doge-orange); }
+  .slot-tools { display:flex; justify-content:center; padding:0 16px 6px; }
+  .slot-tools button { background:transparent; border:1px solid var(--border-strong); border-radius:var(--r-sm); color:var(--text-muted); font-size:10px; font-weight:700; padding:5px 18px; cursor:pointer; }
+  .slot-tools button:hover { background:var(--bg-card-soft); border-color:var(--doge-orange); color:var(--doge-deep); }
   .slot-pay-card { margin:4px 16px; padding:7px 12px 5px; background:var(--bg-card-soft); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); }
   .slot-paytable-title { text-align:center; font-size:10px; font-weight:800; letter-spacing:.3px; color:var(--doge-deep); margin:0 0 5px; }
   .slot-paytable { display:grid; grid-template-columns:1fr 1fr; column-gap:16px; row-gap:1px; }
@@ -188,7 +188,7 @@
       </div>
       <div class="slot-curbet"><span>${l.betLabel}</span>: <b id="slotCurBet">0.42</b></div>
       <button class="slot-spin-btn" id="slotSpinBtn">${l.spin}</button>
-      <div class="slot-tools"><button id="slotTopup">${l.topup}</button><button id="slotReset">${l.reset}</button></div>
+      <div class="slot-tools"><button id="slotReset">${l.reset}</button></div>
       <div class="slot-pay-card">
         <div class="slot-paytable-title">${l.paytable}</div>
         <div class="slot-paytable" id="slotPaytable"></div>
@@ -223,7 +223,6 @@
     $('slotBack').addEventListener('click', () => { if (window.showPage) showPage('page-wallet'); });
     p.querySelectorAll('.slot-bet-btn[data-bet]').forEach(b => b.addEventListener('click', () => pickBet(parseFloat(b.dataset.bet), b)));
     $('slotSpinBtn').addEventListener('click', handleSpin);
-    $('slotTopup').addEventListener('click', async () => { const s = await getState(); s.credits += 1000; await setState(s); render(s); toast(L().topupDone); });
     $('slotReset').addEventListener('click', async () => { if (confirm(L().resetConfirm)) { const s = def(); await setState(s); render(s); msg(L().msgDefault, ''); } });
   }
 
@@ -237,7 +236,7 @@
       set('.slot-title', l.title); set('.slot-sub', l.sub);
       set('.slot-credit-label', l.credits); set('.slot-credit-note', l.note);
       set('#slotSpinBtn', l.spin);
-      set('#slotTopup', l.topup); set('#slotReset', l.reset);
+      set('#slotReset', l.reset);
       set('.slot-paytable-title', l.paytable); set('.slot-curbet span', l.betLabel);
       buildPaytable(); getState().then(render);
     }
