@@ -482,10 +482,34 @@
     /* Actions */
     .action-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       padding: 0 16px 16px;
     }
+
+    /* Apps section — 钱包应用挂这里 */
+    .app-section {
+      margin: 0 16px 14px;
+      padding: 12px 14px 14px;
+      background: var(--bg-card-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-sm);
+    }
+    .app-section-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--doge-deep);
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .app-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .app-grid .action-btn { width: 92px; }
 
     .action-btn {
       background: var(--bg-card);
@@ -1435,13 +1459,20 @@
           <div class="icon">📥</div>
           <div class="label" data-i18n="wallet_action_receive">接收</div>
         </div>
-        <div class="action-btn" id="btnGoRedPacket">
-          <div class="icon">🧧</div>
-          <div class="label" data-i18n="wallet_action_redpacket">红包</div>
-        </div>
         <div class="action-btn" id="btnRefresh">
           <div class="icon">🔄</div>
           <div class="label" data-i18n="wallet_action_refresh">刷新</div>
+        </div>
+      </div>
+
+      <!-- 钱包应用区（红包等应用挂这里；老虎机闭源插件也注入到 #appGrid） -->
+      <div class="app-section">
+        <div class="app-section-title" data-i18n="apps_title">应用</div>
+        <div class="app-grid" id="appGrid">
+          <div class="action-btn" id="btnGoRedPacket">
+            <div class="icon">🧧</div>
+            <div class="label" data-i18n="wallet_action_redpacket">红包</div>
+          </div>
         </div>
       </div>
 
