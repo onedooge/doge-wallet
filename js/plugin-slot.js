@@ -19,24 +19,22 @@
     zh: {
       action: '老虎机', title: '🎰 DOGE 老虎机', sub: 'Much Luck · Very Spin · Wow',
       credits: '游戏币', note: '游戏币 · 非真实 DOGE', betLabel: '本次押注',
-      spin: '🎰 开转 SPIN', spinning: '转动中...', topup: '+1000 游戏币', reset: '重置游戏币',
-      paytable: '赔付表（三连倍率）', pair: '任意两连', allin: 'ALL IN', back: '← 返回钱包', appsTitle: '应用',
+      spin: '🎰 开转 SPIN', spinning: '转动中...', reset: '重置游戏币',
+      paytable: '赔付表（三连倍率）', pair: '任意两连', back: '← 返回钱包', appsTitle: '应用',
       msgDefault: '选好押注，点 SPIN！', miss: '没中，再来一把！🐕',
-      insufficient: '游戏币不足，点 +1000 充值', resetConfirm: '把游戏币重置回 1000？',
-      topupDone: '+1000 游戏币 🐕',
+      insufficient: '游戏币不足，请重置', resetConfirm: '把游戏币重置回 1000？',
       win3: (x, w) => `三连 ×${x}！赢 ${w} 🎉`, win2: (x, w) => `两连 ×${x} · 赢 ${w}`,
-      stats: s => `转 ${s.spins} · 累计押 ${s.totalBet} · 累计赢 ${s.totalWon} · 最高 ${s.bestWin}`,
+      stSpins: '转', stBet: '累计押', stWon: '累计赢', stBest: '最高',
     },
     en: {
       action: 'Slots', title: '🎰 DOGE Slots', sub: 'Much Luck · Very Spin · Wow',
       credits: 'Game Credits', note: 'Game credits · not real DOGE', betLabel: 'Your bet',
-      spin: '🎰 SPIN', spinning: 'Spinning...', topup: '+1000 credits', reset: 'Reset credits',
-      paytable: 'Paytable (3-match)', pair: 'Any pair', allin: 'ALL IN', back: '← Back', appsTitle: 'Apps',
+      spin: '🎰 SPIN', spinning: 'Spinning...', reset: 'Reset credits',
+      paytable: 'Paytable (3-match)', pair: 'Any pair', back: '← Back', appsTitle: 'Apps',
       msgDefault: 'Pick a bet, hit SPIN!', miss: 'No match — spin again! 🐕',
-      insufficient: 'Not enough credits — tap +1000', resetConfirm: 'Reset game credits to 1000?',
-      topupDone: '+1000 credits 🐕',
+      insufficient: 'Not enough credits — reset to refill', resetConfirm: 'Reset game credits to 1000?',
       win3: (x, w) => `3-match ×${x}! Won ${w} 🎉`, win2: (x, w) => `Pair ×${x} · Won ${w}`,
-      stats: s => `Spins ${s.spins} · Bet ${s.totalBet} · Won ${s.totalWon} · Best ${s.bestWin}`,
+      stSpins: 'Spins', stBet: 'Bet', stWon: 'Won', stBest: 'Best',
     },
   };
   function lang() { try { return (window.I18n && I18n.getLang && I18n.getLang() === 'en') ? 'en' : 'zh'; } catch (e) { return 'zh'; } }
@@ -86,26 +84,29 @@
   .slot-sub { font-size:9px; color:rgba(255,253,243,.85); margin-top:1px; }
   .slot-back { position:absolute; left:10px; top:50%; transform:translateY(-50%); width:26px; height:26px; border:none; border-radius:8px; background:rgba(255,255,255,.28); color:#FFFDF3; font-size:15px; font-weight:800; line-height:1; cursor:pointer; }
   .slot-back:hover { background:rgba(255,255,255,.5); }
-  .slot-credit-card { margin:9px 16px; padding:10px 16px 8px; text-align:center; background:linear-gradient(155deg,#FFFFFF,#FFF6D6 70%,#FCE7A2); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); }
-  .slot-credit-label { font-size:9px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--doge-deep); margin-bottom:4px; }
+  .slot-credit-card { display:flex; align-items:center; gap:12px; margin:9px 16px; padding:9px 14px; background:linear-gradient(155deg,#FFFFFF,#FFF6D6 70%,#FCE7A2); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); }
+  .slot-credit-main { flex:1; text-align:center; min-width:0; }
+  .slot-credit-label { font-size:9px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--doge-deep); margin-bottom:3px; }
   .slot-credit-amt { font-family:'Impact','Arial Black',sans-serif; font-size:30px; color:var(--doge-brown); line-height:1; letter-spacing:.5px; }
-  .slot-credit-note { font-size:9px; color:var(--text-muted); }
-  .slot-stats { font-size:9px; color:var(--text-secondary); margin-top:3px; }
+  .slot-credit-note { font-size:9px; color:var(--text-muted); margin-top:3px; }
+  .slot-stats { flex:0 0 auto; min-width:104px; padding-left:12px; border-left:1px solid var(--border); }
+  .slot-stat-row { display:flex; justify-content:space-between; gap:8px; font-size:10px; color:var(--text-secondary); padding:1.5px 0; }
+  .slot-stat-row b { color:var(--doge-brown); font-weight:800; }
   .slot-reels { display:flex; gap:10px; justify-content:center; padding:10px 12px; margin:2px 16px 0; background:#3D2800; border-radius:var(--r-lg); border:3px solid var(--doge-gold); box-shadow:inset 0 2px 12px rgba(0,0,0,.45); }
-  .slot-reel { flex:1; max-width:76px; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; font-size:40px; background:#FFFDF3; border-radius:10px; box-shadow:inset 0 0 8px rgba(0,0,0,.15); overflow:hidden; }
+  .slot-reel { flex:1; max-width:88px; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; font-size:46px; background:#FFFDF3; border-radius:12px; box-shadow:inset 0 0 8px rgba(0,0,0,.15); overflow:hidden; }
   .slot-reel.spinning { animation:slot-shake .3s linear infinite; }
   @keyframes slot-shake { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
   .slot-reels.win .slot-reel { animation:slot-pop .5s ease; box-shadow:0 0 16px var(--doge-bright), inset 0 0 8px rgba(0,0,0,.15); }
   @keyframes slot-pop { 0%{transform:scale(1)} 50%{transform:scale(1.1)} 100%{transform:scale(1)} }
-  .slot-msg { text-align:center; min-height:17px; font-size:13px; font-weight:700; color:var(--doge-deep); margin:6px 16px 3px; }
+  .slot-msg { text-align:center; min-height:16px; font-size:13px; font-weight:700; color:var(--doge-deep); margin:5px 16px 2px; }
   .slot-msg.win { color:var(--success); } .slot-msg.lose { color:var(--danger); }
   .slot-bet-row { display:flex; gap:6px; padding:0 16px; }
   .slot-bet-btn { flex:1; padding:7px 2px; border:1px solid var(--border); border-radius:var(--r-sm); background:var(--bg-card); color:var(--doge-deep); font-size:12px; font-weight:800; cursor:pointer; font-family:inherit; transition:all .18s; box-shadow:var(--shadow-sm); }
   .slot-bet-btn:hover { background:var(--bg-card-soft); border-color:var(--doge-orange); }
   .slot-bet-btn.active { background:linear-gradient(135deg,var(--doge-bright),var(--doge-orange)); border-color:var(--doge-orange); color:#FFFDF3; }
-  .slot-curbet { text-align:center; font-size:11px; color:var(--text-secondary); margin:5px 0; }
+  .slot-curbet { text-align:center; font-size:11px; color:var(--text-secondary); margin:4px 0; }
   .slot-curbet b { color:var(--doge-brown); font-size:13px; }
-  .slot-spin-btn { display:block; width:calc(100% - 32px); margin:4px 16px 10px; padding:12px; border:none; border-radius:var(--r-md); background:linear-gradient(135deg,#E45757,#C9352C); color:#FFFDF3; font-family:'Impact','Arial Black',sans-serif; font-size:19px; letter-spacing:1px; cursor:pointer; box-shadow:0 5px 16px rgba(201,53,44,.42); transition:all .18s; }
+  .slot-spin-btn { display:block; width:calc(100% - 32px); margin:3px 16px 8px; padding:11px; border:none; border-radius:var(--r-md); background:linear-gradient(135deg,#E45757,#C9352C); color:#FFFDF3; font-family:'Impact','Arial Black',sans-serif; font-size:19px; letter-spacing:1px; cursor:pointer; box-shadow:0 5px 16px rgba(201,53,44,.42); transition:all .18s; }
   .slot-spin-btn:hover { transform:translateY(-2px); box-shadow:0 7px 18px rgba(201,53,44,.55); }
   .slot-spin-btn:disabled { filter:grayscale(.5); cursor:not-allowed; transform:none; }
   .slot-tools { display:flex; justify-content:center; padding:0 16px 6px; }
@@ -131,7 +132,16 @@
   function fmt(n) { if (window.formatDoge) return formatDoge(n); n = parseFloat(n) || 0; return n >= 1e6 ? (n / 1e6).toFixed(2) + 'M' : n >= 1e3 ? (n / 1e3).toFixed(2) + 'K' : n.toFixed(2); }
   function msg(text, cls) { const m = $('slotMsg'); if (m) { m.textContent = text; m.className = 'slot-msg ' + (cls || ''); } }
   function pickBet(b, btn) { bet = b; const e = $('slotCurBet'); if (e) e.textContent = b; document.querySelectorAll('.slot-bet-btn').forEach(x => x.classList.remove('active')); if (btn) btn.classList.add('active'); }
-  function render(s) { const c = $('slotCredits'); if (c) c.textContent = Number(s.credits).toFixed(2); const st = $('slotStats'); if (st) st.textContent = L().stats(s); }
+  function render(s) {
+    const c = $('slotCredits'); if (c) c.textContent = Number(s.credits).toFixed(2);
+    const st = $('slotStats'); if (!st) return;
+    const l = L();
+    st.innerHTML =
+      `<div class="slot-stat-row"><span>${l.stSpins}</span><b>${s.spins}</b></div>`
+    + `<div class="slot-stat-row"><span>${l.stBet}</span><b>${fmt(s.totalBet)}</b></div>`
+    + `<div class="slot-stat-row"><span>${l.stWon}</span><b>${fmt(s.totalWon)}</b></div>`
+    + `<div class="slot-stat-row"><span>${l.stBest}</span><b>${fmt(s.bestWin)}</b></div>`;
+  }
   function buildPaytable() {
     const el = $('slotPaytable'); if (!el) return;
     el.innerHTML = SYMBOLS.map(s => `<div class="slot-pay-row"><span>${s.emoji}${s.emoji}${s.emoji}</span><b>×${s.x3}</b></div>`).join('')
@@ -175,9 +185,11 @@
         <div class="slot-title">${l.title}</div><div class="slot-sub">${l.sub}</div>
       </div>
       <div class="slot-credit-card">
-        <div class="slot-credit-label">${l.credits}</div>
-        <div class="slot-credit-amt"><span id="slotCredits">0</span></div>
-        <div class="slot-credit-note">${l.note}</div>
+        <div class="slot-credit-main">
+          <div class="slot-credit-label">${l.credits}</div>
+          <div class="slot-credit-amt"><span id="slotCredits">0</span></div>
+          <div class="slot-credit-note">${l.note}</div>
+        </div>
         <div class="slot-stats" id="slotStats"></div>
       </div>
       <div class="slot-reels" id="slotReels"><div class="slot-reel" id="slotR0">🐕</div><div class="slot-reel" id="slotR1">🚀</div><div class="slot-reel" id="slotR2">🌙</div></div>
