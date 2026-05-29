@@ -45,10 +45,10 @@
   /* ===================== 游戏逻辑（游戏币，chrome.storage.local: doge_slot） ===================== */
   const KEY = 'doge_slot', START = 1000, PAIR_X = 2;
   const SYMBOLS = [
-    { key: 'doge', emoji: '🐕', weight: 3, x3: 50 }, { key: 'rocket', emoji: '🚀', weight: 5, x3: 25 },
-    { key: 'moon', emoji: '🌙', weight: 6, x3: 20 }, { key: 'diamond', emoji: '💎', weight: 8, x3: 15 },
-    { key: 'seven', emoji: '7️⃣', weight: 10, x3: 10 }, { key: 'bone', emoji: '🦴', weight: 14, x3: 8 },
-    { key: 'cherry', emoji: '🍒', weight: 20, x3: 5 },
+    { key: 'doge', emoji: '🐕', weight: 3, x3: 10 }, { key: 'rocket', emoji: '🚀', weight: 5, x3: 8 },
+    { key: 'moon', emoji: '🌙', weight: 6, x3: 7 }, { key: 'diamond', emoji: '💎', weight: 8, x3: 6 },
+    { key: 'seven', emoji: '7️⃣', weight: 10, x3: 5 }, { key: 'bone', emoji: '🦴', weight: 14, x3: 4 },
+    { key: 'cherry', emoji: '🍒', weight: 20, x3: 3 },
   ];
   const EMOJIS = SYMBOLS.map(s => s.emoji);
   const sym = k => SYMBOLS.find(s => s.key === k);
@@ -144,7 +144,8 @@
     buildPaytable(); msg(L().msgDefault, '');
   }
   function openSlot() { if (window.showPage) showPage('page-slot'); const h = $('mainHeader'); if (h) h.style.display = 'none'; refresh(); }
-  async function handleSpin() {
+  async function handleSpin(e) {
+    if (e && e.isTrusted === false) return; // 防脚本刷单:只认真人点击,合成/脚本触发的点击一律忽略
     if (spinning) return;
     const s = await getState();
     if (bet <= 0 || bet > s.credits) { msg(L().insufficient, 'lose'); toast(L().insufficient, true); return; }
@@ -184,7 +185,6 @@
       <div class="slot-bet-row">
         <button class="slot-bet-btn" data-bet="0.42">0.42</button>
         <button class="slot-bet-btn" data-bet="0.69">0.69</button>
-        <button class="slot-bet-btn" id="slotBetMax">${l.allin}</button>
       </div>
       <div class="slot-curbet"><span>${l.betLabel}</span>: <b id="slotCurBet">0.42</b></div>
       <button class="slot-spin-btn" id="slotSpinBtn">${l.spin}</button>
@@ -222,7 +222,6 @@
     c.appendChild(p);
     $('slotBack').addEventListener('click', () => { if (window.showPage) showPage('page-wallet'); });
     p.querySelectorAll('.slot-bet-btn[data-bet]').forEach(b => b.addEventListener('click', () => pickBet(parseFloat(b.dataset.bet), b)));
-    $('slotBetMax').addEventListener('click', async () => { const s = await getState(); if (s.credits > 0) pickBet(s.credits, $('slotBetMax')); });
     $('slotSpinBtn').addEventListener('click', handleSpin);
     $('slotTopup').addEventListener('click', async () => { const s = await getState(); s.credits += 1000; await setState(s); render(s); toast(L().topupDone); });
     $('slotReset').addEventListener('click', async () => { if (confirm(L().resetConfirm)) { const s = def(); await setState(s); render(s); msg(L().msgDefault, ''); } });
@@ -237,7 +236,7 @@
     if ($('page-slot')) {
       set('.slot-title', l.title); set('.slot-sub', l.sub);
       set('.slot-credit-label', l.credits); set('.slot-credit-note', l.note);
-      set('#slotSpinBtn', l.spin); set('#slotBetMax', l.allin);
+      set('#slotSpinBtn', l.spin);
       set('#slotTopup', l.topup); set('#slotReset', l.reset);
       set('.slot-paytable-title', l.paytable); set('.slot-curbet span', l.betLabel);
       buildPaytable(); getState().then(render);
