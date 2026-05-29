@@ -86,13 +86,13 @@
   .slot-sub { font-size:9px; color:rgba(255,253,243,.85); margin-top:1px; }
   .slot-back { position:absolute; left:10px; top:50%; transform:translateY(-50%); width:26px; height:26px; border:none; border-radius:8px; background:rgba(255,255,255,.28); color:#FFFDF3; font-size:15px; font-weight:800; line-height:1; cursor:pointer; }
   .slot-back:hover { background:rgba(255,255,255,.5); }
-  .slot-credit-card { margin:8px 16px; padding:7px 16px; text-align:center; background:linear-gradient(155deg,#FFFFFF,#FFF6D6 70%,#FCE7A2); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); }
+  .slot-credit-card { margin:9px 16px; padding:9px 16px; text-align:center; background:linear-gradient(155deg,#FFFFFF,#FFF6D6 70%,#FCE7A2); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); }
   .slot-credit-label { font-size:9px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--doge-deep); }
   .slot-credit-amt { font-family:'Impact','Arial Black',sans-serif; font-size:27px; color:var(--doge-brown); line-height:1.05; }
   .slot-credit-note { font-size:9px; color:var(--text-muted); }
   .slot-stats { font-size:9px; color:var(--text-secondary); margin-top:3px; }
-  .slot-reels { display:flex; gap:8px; justify-content:center; padding:9px; margin:0 16px; background:#3D2800; border-radius:var(--r-md); border:3px solid var(--doge-gold); box-shadow:inset 0 2px 10px rgba(0,0,0,.4); }
-  .slot-reel { width:72px; height:62px; line-height:62px; text-align:center; font-size:36px; background:#FFFDF3; border-radius:8px; box-shadow:inset 0 0 8px rgba(0,0,0,.15); overflow:hidden; }
+  .slot-reels { display:flex; gap:9px; justify-content:center; padding:11px; margin:2px 16px 0; background:#3D2800; border-radius:var(--r-lg); border:3px solid var(--doge-gold); box-shadow:inset 0 2px 12px rgba(0,0,0,.45); }
+  .slot-reel { width:66px; height:66px; line-height:66px; text-align:center; font-size:40px; background:#FFFDF3; border-radius:10px; box-shadow:inset 0 0 8px rgba(0,0,0,.15); overflow:hidden; }
   .slot-reel.spinning { animation:slot-shake .3s linear infinite; }
   @keyframes slot-shake { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
   .slot-reels.win .slot-reel { animation:slot-pop .5s ease; box-shadow:0 0 16px var(--doge-bright), inset 0 0 8px rgba(0,0,0,.15); }
@@ -105,15 +105,16 @@
   .slot-bet-btn.active { background:linear-gradient(135deg,var(--doge-bright),var(--doge-orange)); border-color:var(--doge-orange); color:#FFFDF3; }
   .slot-curbet { text-align:center; font-size:11px; color:var(--text-secondary); margin:5px 0; }
   .slot-curbet b { color:var(--doge-brown); font-size:13px; }
-  .slot-spin-btn { display:block; width:calc(100% - 32px); margin:2px 16px 8px; padding:10px; border:none; border-radius:var(--r-md); background:linear-gradient(135deg,#E45757,#C9352C); color:#FFFDF3; font-family:'Impact','Arial Black',sans-serif; font-size:18px; letter-spacing:1px; cursor:pointer; box-shadow:0 4px 14px rgba(201,53,44,.4); transition:all .18s; }
+  .slot-spin-btn { display:block; width:calc(100% - 32px); margin:4px 16px 10px; padding:12px; border:none; border-radius:var(--r-md); background:linear-gradient(135deg,#E45757,#C9352C); color:#FFFDF3; font-family:'Impact','Arial Black',sans-serif; font-size:19px; letter-spacing:1px; cursor:pointer; box-shadow:0 5px 16px rgba(201,53,44,.42); transition:all .18s; }
   .slot-spin-btn:hover { transform:translateY(-2px); box-shadow:0 7px 18px rgba(201,53,44,.55); }
   .slot-spin-btn:disabled { filter:grayscale(.5); cursor:not-allowed; transform:none; }
   .slot-tools { display:flex; gap:8px; justify-content:center; padding:0 16px 6px; }
   .slot-tools button { flex:1; background:var(--bg-card); border:1px solid var(--border-strong); border-radius:var(--r-sm); color:var(--doge-deep); font-size:10px; font-weight:700; padding:6px; cursor:pointer; }
   .slot-tools button:hover { background:var(--bg-card-soft); border-color:var(--doge-orange); }
-  .slot-paytable-title { text-align:center; font-size:10px; font-weight:800; color:var(--doge-brown); margin:1px 0 4px; }
-  .slot-paytable { padding:0 16px; display:grid; grid-template-columns:1fr 1fr; column-gap:18px; }
-  .slot-pay-row { display:flex; justify-content:space-between; align-items:center; font-size:11px; padding:2px 0; border-bottom:1px solid var(--border); }
+  .slot-pay-card { margin:4px 16px; padding:7px 12px 5px; background:var(--bg-card-soft); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); }
+  .slot-paytable-title { text-align:center; font-size:10px; font-weight:800; letter-spacing:.3px; color:var(--doge-deep); margin:0 0 5px; }
+  .slot-paytable { display:grid; grid-template-columns:1fr 1fr; column-gap:16px; row-gap:1px; }
+  .slot-pay-row { display:flex; justify-content:space-between; align-items:center; font-size:11px; padding:2px 2px; border-bottom:1px solid rgba(160,127,50,.10); }
   .slot-pay-row span { letter-spacing:2px; } .slot-pay-row b { color:var(--success); }
   /* 应用区(插件按需创建) */
   .app-section { margin:0 16px 14px; padding:12px 14px 14px; background:var(--bg-card-soft); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); }
@@ -188,8 +189,10 @@
       <div class="slot-curbet"><span>${l.betLabel}</span>: <b id="slotCurBet">0.42</b></div>
       <button class="slot-spin-btn" id="slotSpinBtn">${l.spin}</button>
       <div class="slot-tools"><button id="slotTopup">${l.topup}</button><button id="slotReset">${l.reset}</button></div>
-      <div class="slot-paytable-title">${l.paytable}</div>
-      <div class="slot-paytable" id="slotPaytable"></div>
+      <div class="slot-pay-card">
+        <div class="slot-paytable-title">${l.paytable}</div>
+        <div class="slot-paytable" id="slotPaytable"></div>
+      </div>
     </div>`;
   }
   // 应用区由插件按需创建(钱包核心不内置),插在 .action-grid 之后
