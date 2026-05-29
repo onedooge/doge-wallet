@@ -79,38 +79,41 @@
 
   /* ===================== 样式（自注入） ===================== */
   const CSS = `
-  .slot-wrap { padding: 0 0 20px; }
-  .slot-header { background: linear-gradient(135deg, var(--doge-bright), var(--doge-orange)); padding: 20px 20px 16px; text-align: center; border-bottom: 2px solid var(--doge-gold); }
-  .slot-title { font-family:'Impact','Arial Black',sans-serif; font-size:22px; color:#FFFDF3; text-shadow:0 2px 6px rgba(0,0,0,.25); }
-  .slot-sub { font-size:11px; color:rgba(255,253,243,.85); margin-top:2px; }
-  .slot-credit-card { margin:14px 16px; padding:14px 18px; text-align:center; background:linear-gradient(155deg,#FFFFFF,#FFF6D6 70%,#FCE7A2); border:1px solid var(--border); border-radius:var(--r-xl); box-shadow:var(--shadow-md); }
-  .slot-credit-label { font-size:10px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase; color:var(--doge-deep); }
-  .slot-credit-amt { font-family:'Impact','Arial Black',sans-serif; font-size:38px; color:var(--doge-brown); line-height:1.1; }
-  .slot-credit-note { font-size:10px; color:var(--text-muted); margin-top:2px; }
-  .slot-stats { font-size:10px; color:var(--text-secondary); margin-top:8px; }
-  .slot-reels { display:flex; gap:10px; justify-content:center; padding:16px; margin:0 16px; background:#3D2800; border-radius:var(--r-lg); border:3px solid var(--doge-gold); box-shadow:inset 0 2px 10px rgba(0,0,0,.4); }
-  .slot-reel { width:88px; height:96px; line-height:96px; text-align:center; font-size:50px; background:#FFFDF3; border-radius:10px; box-shadow:inset 0 0 8px rgba(0,0,0,.15); overflow:hidden; }
+  /* 紧凑布局:整页一屏装下,不滚动 */
+  .slot-wrap { padding: 0 0 8px; }
+  .slot-header { position:relative; background: linear-gradient(135deg, var(--doge-bright), var(--doge-orange)); padding: 9px 20px 7px; text-align: center; border-bottom: 2px solid var(--doge-gold); }
+  .slot-title { font-family:'Impact','Arial Black',sans-serif; font-size:17px; color:#FFFDF3; text-shadow:0 2px 6px rgba(0,0,0,.25); }
+  .slot-sub { font-size:9px; color:rgba(255,253,243,.85); margin-top:1px; }
+  .slot-back { position:absolute; left:10px; top:50%; transform:translateY(-50%); width:26px; height:26px; border:none; border-radius:8px; background:rgba(255,255,255,.28); color:#FFFDF3; font-size:15px; font-weight:800; line-height:1; cursor:pointer; }
+  .slot-back:hover { background:rgba(255,255,255,.5); }
+  .slot-credit-card { margin:8px 16px; padding:7px 16px; text-align:center; background:linear-gradient(155deg,#FFFFFF,#FFF6D6 70%,#FCE7A2); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); }
+  .slot-credit-label { font-size:9px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--doge-deep); }
+  .slot-credit-amt { font-family:'Impact','Arial Black',sans-serif; font-size:27px; color:var(--doge-brown); line-height:1.05; }
+  .slot-credit-note { font-size:9px; color:var(--text-muted); }
+  .slot-stats { font-size:9px; color:var(--text-secondary); margin-top:3px; }
+  .slot-reels { display:flex; gap:8px; justify-content:center; padding:9px; margin:0 16px; background:#3D2800; border-radius:var(--r-md); border:3px solid var(--doge-gold); box-shadow:inset 0 2px 10px rgba(0,0,0,.4); }
+  .slot-reel { width:72px; height:62px; line-height:62px; text-align:center; font-size:36px; background:#FFFDF3; border-radius:8px; box-shadow:inset 0 0 8px rgba(0,0,0,.15); overflow:hidden; }
   .slot-reel.spinning { animation:slot-shake .3s linear infinite; }
-  @keyframes slot-shake { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  @keyframes slot-shake { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
   .slot-reels.win .slot-reel { animation:slot-pop .5s ease; box-shadow:0 0 16px var(--doge-bright), inset 0 0 8px rgba(0,0,0,.15); }
-  @keyframes slot-pop { 0%{transform:scale(1)} 50%{transform:scale(1.12)} 100%{transform:scale(1)} }
-  .slot-msg { text-align:center; min-height:22px; font-size:14px; font-weight:700; color:var(--doge-deep); margin:12px 16px 8px; }
+  @keyframes slot-pop { 0%{transform:scale(1)} 50%{transform:scale(1.1)} 100%{transform:scale(1)} }
+  .slot-msg { text-align:center; min-height:17px; font-size:13px; font-weight:700; color:var(--doge-deep); margin:6px 16px 3px; }
   .slot-msg.win { color:var(--success); } .slot-msg.lose { color:var(--danger); }
   .slot-bet-row { display:flex; gap:6px; padding:0 16px; }
-  .slot-bet-btn { flex:1; padding:9px 2px; border:1px solid var(--border); border-radius:var(--r-sm); background:var(--bg-card); color:var(--doge-deep); font-size:12px; font-weight:800; cursor:pointer; font-family:inherit; transition:all .18s; box-shadow:var(--shadow-sm); }
+  .slot-bet-btn { flex:1; padding:7px 2px; border:1px solid var(--border); border-radius:var(--r-sm); background:var(--bg-card); color:var(--doge-deep); font-size:12px; font-weight:800; cursor:pointer; font-family:inherit; transition:all .18s; box-shadow:var(--shadow-sm); }
   .slot-bet-btn:hover { background:var(--bg-card-soft); border-color:var(--doge-orange); }
   .slot-bet-btn.active { background:linear-gradient(135deg,var(--doge-bright),var(--doge-orange)); border-color:var(--doge-orange); color:#FFFDF3; }
-  .slot-curbet { text-align:center; font-size:12px; color:var(--text-secondary); margin:8px 0; }
-  .slot-curbet b { color:var(--doge-brown); font-size:14px; }
-  .slot-spin-btn { display:block; width:calc(100% - 32px); margin:4px 16px 12px; padding:15px; border:none; border-radius:var(--r-md); background:linear-gradient(135deg,#E45757,#C9352C); color:#FFFDF3; font-family:'Impact','Arial Black',sans-serif; font-size:20px; letter-spacing:1px; cursor:pointer; box-shadow:0 5px 16px rgba(201,53,44,.4); transition:all .18s; }
-  .slot-spin-btn:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(201,53,44,.55); }
+  .slot-curbet { text-align:center; font-size:11px; color:var(--text-secondary); margin:5px 0; }
+  .slot-curbet b { color:var(--doge-brown); font-size:13px; }
+  .slot-spin-btn { display:block; width:calc(100% - 32px); margin:2px 16px 8px; padding:10px; border:none; border-radius:var(--r-md); background:linear-gradient(135deg,#E45757,#C9352C); color:#FFFDF3; font-family:'Impact','Arial Black',sans-serif; font-size:18px; letter-spacing:1px; cursor:pointer; box-shadow:0 4px 14px rgba(201,53,44,.4); transition:all .18s; }
+  .slot-spin-btn:hover { transform:translateY(-2px); box-shadow:0 7px 18px rgba(201,53,44,.55); }
   .slot-spin-btn:disabled { filter:grayscale(.5); cursor:not-allowed; transform:none; }
-  .slot-tools { display:flex; gap:8px; justify-content:center; padding:0 16px 14px; }
-  .slot-tools button { flex:1; background:var(--bg-card); border:1px solid var(--border-strong); border-radius:var(--r-sm); color:var(--doge-deep); font-size:11px; font-weight:700; padding:8px; cursor:pointer; }
+  .slot-tools { display:flex; gap:8px; justify-content:center; padding:0 16px 6px; }
+  .slot-tools button { flex:1; background:var(--bg-card); border:1px solid var(--border-strong); border-radius:var(--r-sm); color:var(--doge-deep); font-size:10px; font-weight:700; padding:6px; cursor:pointer; }
   .slot-tools button:hover { background:var(--bg-card-soft); border-color:var(--doge-orange); }
-  .slot-paytable-title { text-align:center; font-size:11px; font-weight:800; color:var(--doge-brown); margin:4px 0 8px; }
-  .slot-paytable { padding:0 24px; }
-  .slot-pay-row { display:flex; justify-content:space-between; align-items:center; font-size:12px; padding:4px 0; border-bottom:1px solid var(--border); }
+  .slot-paytable-title { text-align:center; font-size:10px; font-weight:800; color:var(--doge-brown); margin:1px 0 4px; }
+  .slot-paytable { padding:0 16px; display:grid; grid-template-columns:1fr 1fr; column-gap:18px; }
+  .slot-pay-row { display:flex; justify-content:space-between; align-items:center; font-size:11px; padding:2px 0; border-bottom:1px solid var(--border); }
   .slot-pay-row span { letter-spacing:2px; } .slot-pay-row b { color:var(--success); }
   /* 应用区(插件按需创建) */
   .app-section { margin:0 16px 14px; padding:12px 14px 14px; background:var(--bg-card-soft); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); }
@@ -139,7 +142,7 @@
     const e = $('slotCurBet'); if (e) e.textContent = bet;
     buildPaytable(); msg(L().msgDefault, '');
   }
-  function openSlot() { if (window.showPage) showPage('page-slot'); const h = $('mainHeader'); if (h) h.style.display = 'flex'; refresh(); }
+  function openSlot() { if (window.showPage) showPage('page-slot'); const h = $('mainHeader'); if (h) h.style.display = 'none'; refresh(); }
   async function handleSpin() {
     if (spinning) return;
     const s = await getState();
@@ -164,9 +167,11 @@
   function pageHTML() {
     const l = L();
     return `
-    <button class="back-btn" id="slotBack">${l.back}</button>
     <div class="slot-wrap">
-      <div class="slot-header"><div class="slot-title">${l.title}</div><div class="slot-sub">${l.sub}</div></div>
+      <div class="slot-header">
+        <button class="slot-back" id="slotBack" title="${l.back}">←</button>
+        <div class="slot-title">${l.title}</div><div class="slot-sub">${l.sub}</div>
+      </div>
       <div class="slot-credit-card">
         <div class="slot-credit-label">${l.credits}</div>
         <div class="slot-credit-amt"><span id="slotCredits">0</span></div>
@@ -227,7 +232,7 @@
     set('#slotNavLabel', l.action);
     set('#slotAppsTitle', l.appsTitle);
     if ($('page-slot')) {
-      set('#slotBack', l.back); set('.slot-title', l.title); set('.slot-sub', l.sub);
+      set('.slot-title', l.title); set('.slot-sub', l.sub);
       set('.slot-credit-label', l.credits); set('.slot-credit-note', l.note);
       set('#slotSpinBtn', l.spin); set('#slotBetMax', l.allin);
       set('#slotTopup', l.topup); set('#slotReset', l.reset);
