@@ -24,6 +24,7 @@ A fully client-side Dogecoin Chrome extension wallet with real secp256k1 cryptog
 | 📤 **Send DOGE** | Builds & signs real P2PKH transactions, broadcasts to mainnet |
 | 📥 **Receive** | Address display with QR code |
 | 🧧 **Red Packet** | WeChat-style lucky money — split DOGE among friends randomly |
+| 🎰 **Slot Machine** | Single-player mini-game with game credits — **no real DOGE**, for fun/testing only |
 | 🔒 **AES-GCM Encryption** | Wallet encrypted with PBKDF2 (210,000 iterations) locally |
 | 📱 **Import/Export** | BIP39 mnemonic import, WIF private key export |
 

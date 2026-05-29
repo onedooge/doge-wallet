@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "DOGE Wallet 🐕",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Your friendly Dogecoin wallet — much wow, very crypto!",
   "permissions": ["storage", "clipboardWrite", "clipboardRead"],
   "host_permissions": [
