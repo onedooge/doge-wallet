@@ -25,7 +25,7 @@ A fully client-side Dogecoin Chrome extension wallet with real secp256k1 cryptog
 | 📥 **Receive** | Address display with QR code |
 | 🧧 **Red Packet** | WeChat-style lucky money — split DOGE among friends randomly |
 | 🎰 **Slot Machine** | Single-player mini-game with game credits — **no real DOGE**, for fun/testing only |
-| 🆔 **Doger ID** | 12-digit Doge number (derived from address, QQ-style), shown as `684 419 585 614`. **Local demo** |
+| 🆔 **Doge ID** | 12-digit Doge number (derived from address, QQ-style), shown as `684 419 585 614`. **Local demo** |
 | 🌐 **.doge Names** | Doge Name Service: claim `name.doge` + resolve from a local book, send without long addresses. **Local demo** |
 | 💬 **Doge Chat** | Contacts + chat (built-in Doge Bot auto-replies). **Local demo**; cross-user networking is next |
 | 🔒 **AES-GCM Encryption** | Wallet encrypted with PBKDF2 (210,000 iterations) locally |

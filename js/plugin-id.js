@@ -1,5 +1,5 @@
 /**
- * plugin-id.js — Doger ID 插件（自包含 · 即插即用）
+ * plugin-id.js — Doge ID 插件（自包含 · 即插即用）
  *
  * © 2026 onedooge — 随 DOGE Wallet 一起开源（MIT）。
  *
@@ -9,10 +9,10 @@
 (function () {
   'use strict';
   const STR = {
-    zh: { action: 'Doger ID', title: '🆔 Doger ID', sub: '你的 Doge 号 · 类 QQ 号',
+    zh: { action: 'Doge ID', title: '🆔 Doge ID', sub: '你的 Doge 号 · 类 QQ 号',
       label: 'DOGE 号', nameLabel: '.doge 名字', addrLabel: '钱包地址', unset: '未设置(去 .doge 应用取名)',
       copyId: '复制号码', copyAddr: '复制地址', back: '← 返回钱包', noWallet: '请先解锁钱包', copied: '已复制 🐕', appsTitle: '应用' },
-    en: { action: 'Doger ID', title: '🆔 Doger ID', sub: 'Your Doge number · like QQ',
+    en: { action: 'Doge ID', title: '🆔 Doge ID', sub: 'Your Doge number · like QQ',
       label: 'DOGE ID', nameLabel: '.doge name', addrLabel: 'Wallet address', unset: 'unset (set it in the .doge app)',
       copyId: 'Copy ID', copyAddr: 'Copy address', back: '← Back', noWallet: 'Unlock wallet first', copied: 'Copied 🐕', appsTitle: 'Apps' },
   };
