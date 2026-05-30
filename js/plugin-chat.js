@@ -238,27 +238,21 @@
 
   async function renderProfile() {
     const l = L(); const addr = myAddr();
-    const prof = await getLS(K_PROFILE, { name: '' });
+    const self = await getLS('doge_ns_self', ''); // 名字由 .doge 应用维护,Chat 只读
     const nameEl = $('chatName'); const idEl = $('chatMyId'); const addrEl = $('chatMyAddr'); const avEl = $('chatMyAvatar');
     if (!addr) { nameEl.textContent = l.noWallet; nameEl.className = 'ch-name unset'; idEl.textContent = '—'; addrEl.textContent = '—'; return; }
     const id = deriveId(addr);
-    if (prof.name) { nameEl.innerHTML = `${prof.name}.doge <span class="edit">✏</span>`; nameEl.className = 'ch-name'; }
+    if (self) { nameEl.innerHTML = `${self}.doge <span class="edit">→</span>`; nameEl.className = 'ch-name'; }
     else { nameEl.textContent = l.setName; nameEl.className = 'ch-name unset'; }
     idEl.textContent = id;
     addrEl.textContent = addr;
     avEl.textContent = avatarFor(id);
   }
 
-  async function editName() {
-    const l = L(); if (!myAddr()) { toast(l.noWallet, true); return; }
-    const prof = await getLS(K_PROFILE, { name: '' });
-    const v = prompt(l.namePrompt, prof.name || '');
-    if (v === null) return;
-    const name = v.trim().toLowerCase();
-    if (!/^[a-z0-9]{3,15}$/.test(name)) { toast(l.nameBad, true); return; }
-    prof.name = name; await setLS(K_PROFILE, prof);
-    await renderProfile();
-    toast(name + '.doge ✓');
+  function editName() {
+    // 取名归 .doge 应用,这里点名字直接跳过去
+    if (window.openDogeNs) window.openDogeNs();
+    else toast(L().setName);
   }
 
   async function renderList() {
