@@ -239,10 +239,11 @@
 
   async function renderProfile() {
     const l = L(); const addr = myAddr();
-    const self = await getLS('doge_ns_self', ''); // 名字由 .doge 应用维护,Chat 只读
+    const selfRaw = await getLS('doge_ns_self', null); // 名字由 .doge 应用维护并绑定地址,Chat 只读
     const nameEl = $('chatName'); const idEl = $('chatMyId'); const addrEl = $('chatMyAddr'); const avEl = $('chatMyAvatar');
     if (!addr) { nameEl.textContent = l.noWallet; nameEl.className = 'ch-name unset'; idEl.textContent = '—'; addrEl.textContent = '—'; return; }
     const id = deriveId(addr);
+    const self = selfRaw ? (typeof selfRaw === 'string' ? selfRaw : (selfRaw.address === addr ? selfRaw.name : '')) : '';
     if (self) { nameEl.innerHTML = `${self}.doge <span class="edit">→</span>`; nameEl.className = 'ch-name'; }
     else { nameEl.textContent = l.setName; nameEl.className = 'ch-name unset'; }
     idEl.textContent = id;

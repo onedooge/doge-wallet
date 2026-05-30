@@ -15,13 +15,15 @@
       bookTitle: '域名名册（name.doge → 地址）', addName: '名字', addAddr: 'DOGE 地址', addBtn: '+ 登记域名',
       empty: '还没有登记域名,在上面添加', resolve: '转账', copy: '复制地址',
       back: '← 返回钱包', noWallet: '请先解锁钱包', copied: '已复制 🐕', appsTitle: '应用',
-      claimed: '已认领 ', saved: '已登记 ', nameBad: '名字不合法:小写字母+数字,3~15位', needAddr: '请填地址', dup: '该名字已被登记' },
+      claimed: '已认领 ', saved: '已登记 ', nameBad: '名字不合法:小写字母+数字,3~15位', needAddr: '请填地址', dup: '该名字已被别的地址绑定',
+      boundTag: '✓ 已绑定本钱包', unclaimed: '未认领(下方取名)', otherWallet: '⚠ 该域名绑定的是另一个钱包地址' },
     en: { action: '.doge', title: '🌐 .doge Names', sub: 'Doge Name Service · skip long addresses',
       myTitle: 'My .doge', claimPh: 'pick a name', claim: 'Claim / Change', mine: 'My name',
       bookTitle: 'Name book (name.doge → address)', addName: 'name', addAddr: 'DOGE address', addBtn: '+ Register name',
       empty: 'No names yet — add one above', resolve: 'Send', copy: 'Copy',
       back: '← Back', noWallet: 'Unlock wallet first', copied: 'Copied 🐕', appsTitle: 'Apps',
-      claimed: 'Claimed ', saved: 'Registered ', nameBad: 'Invalid: lowercase letters+digits, 3-15', needAddr: 'Enter address', dup: 'Name already registered' },
+      claimed: 'Claimed ', saved: 'Registered ', nameBad: 'Invalid: lowercase letters+digits, 3-15', needAddr: 'Enter address', dup: 'Name already bound to another address',
+      boundTag: '✓ bound to this wallet', unclaimed: 'unclaimed (set below)', otherWallet: '⚠ This name is bound to another wallet address' },
   };
   const $ = id => document.getElementById(id);
   function lang() { try { return (window.I18n && I18n.getLang && I18n.getLang() === 'en') ? 'en' : 'zh'; } catch (e) { return 'zh'; } }
@@ -46,8 +48,10 @@
   .ns-back:hover { background:rgba(255,255,255,.5); }
   .ns-mine { margin:12px 16px; padding:12px 14px; background:linear-gradient(155deg,#FFFFFF,#FFF6D6 70%,#FCE7A2); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); }
   .ns-mine-label { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--doge-deep); margin-bottom:6px; }
-  .ns-mine-val { font-family:'Impact','Arial Black',sans-serif; font-size:22px; color:var(--doge-brown); margin-bottom:8px; }
-  .ns-mine-val.unset { font-family:inherit; font-size:12px; font-weight:600; color:var(--text-muted); }
+  .ns-mine-val { font-family:'Impact','Arial Black',sans-serif; font-size:22px; color:var(--doge-brown); margin-bottom:2px; }
+  .ns-mine-val.unset { font-family:inherit; font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:8px; }
+  .ns-bind { font-size:9px; color:var(--text-secondary); font-family:monospace; margin-bottom:8px; word-break:break-all; }
+  .ns-bind:empty { margin-bottom:0; }
   .ns-row { display:flex; gap:8px; }
   .ns-suffix-wrap { flex:1; display:flex; align-items:center; background:#FFFFFF; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
   .ns-input { flex:1; padding:9px 10px; border:none; outline:none; font-size:13px; color:var(--text-primary); background:transparent; }
@@ -77,6 +81,7 @@
       <div class="ns-mine">
         <div class="ns-mine-label">${l.myTitle}</div>
         <div class="ns-mine-val unset" id="nsMine">—</div>
+        <div class="ns-bind" id="nsBind"></div>
         <div class="ns-row">
           <div class="ns-suffix-wrap"><input class="ns-input" id="nsClaimInput" placeholder="${l.claimPh}" maxlength="15"/><span class="ns-suffix">.doge</span></div>
           <button class="ns-claim" id="nsClaimBtn">${l.claim}</button>
@@ -99,16 +104,23 @@
   function back() { if (window.showPage) showPage('page-wallet'); const h = $('mainHeader'); if (h) h.style.display = 'flex'; }
 
   async function claim() {
-    const l = L(); if (!myAddr()) return toast(l.noWallet, true);
+    const l = L(); const addr = myAddr(); if (!addr) return toast(l.noWallet, true);
     const v = ($('nsClaimInput').value || '').trim().toLowerCase().replace(/\.doge$/, '');
     if (!validName(v)) return toast(l.nameBad, true);
-    await setLS('doge_ns_self', v);
-    // 自己的名字也登记进名册(指向自己地址)
     const book = await getLS('doge_ns_book', {});
-    book[v] = myAddr(); await setLS('doge_ns_book', book);
+    if (book[v] && book[v] !== addr) return toast(l.dup, true); // 名字已绑定别的地址
+    // 绑定:name.doge ↔ 本钱包地址
+    await setLS('doge_ns_self', { name: v, address: addr });
+    book[v] = addr; await setLS('doge_ns_book', book);
     $('nsClaimInput').value = '';
     toast(l.claimed + v + '.doge ✓');
     render();
+  }
+  // 取出"绑定到当前钱包"的名字(兼容旧字符串格式)
+  function boundName(self, addr) {
+    if (!self) return '';
+    if (typeof self === 'string') return self;
+    return (self.address === addr) ? (self.name || '') : '';
   }
   async function addName() {
     const l = L();
@@ -124,10 +136,16 @@
     render();
   }
   async function render() {
-    const l = L(); const self = await getLS('doge_ns_self', ''); const book = await getLS('doge_ns_book', {});
-    const mine = $('nsMine');
-    if (self) { mine.textContent = self + '.doge'; mine.className = 'ns-mine-val'; }
-    else { mine.textContent = l.noWallet === l.noWallet && myAddr() ? '— —' : l.noWallet; mine.className = 'ns-mine-val unset'; }
+    const l = L(); const self = await getLS('doge_ns_self', null); const book = await getLS('doge_ns_book', {});
+    const addr = myAddr(); const mine = $('nsMine'); const bind = $('nsBind');
+    const myName = boundName(self, addr);
+    if (myName && addr) {
+      mine.textContent = myName + '.doge'; mine.className = 'ns-mine-val';
+      if (bind) bind.textContent = '↔ ' + addr.slice(0, 12) + '…' + addr.slice(-6) + '  ' + l.boundTag;
+    } else {
+      mine.textContent = addr ? l.unclaimed : l.noWallet; mine.className = 'ns-mine-val unset';
+      if (bind) bind.textContent = (self && typeof self === 'object' && self.address && self.address !== addr) ? l.otherWallet : '';
+    }
     const names = Object.keys(book).sort();
     const box = $('nsList');
     if (!names.length) { box.innerHTML = `<div class="ns-empty">${l.empty}</div>`; return; }
@@ -143,6 +161,8 @@
   function transfer(addr) { if (window.showPage) { showPage('page-send'); const h = $('mainHeader'); if (h) h.style.display = 'flex'; } const to = document.getElementById('sendTo'); if (to) { to.value = addr; to.dispatchEvent(new Event('input')); } }
 
   window.openDogeNs = open; // 供其他插件(如 Chat)跳转取名
+  // 反查:地址 → name.doge(供其他应用显示绑定的域名)
+  window.dogeNameOf = async (addr) => { if (!addr) return ''; const book = await getLS('doge_ns_book', {}); for (const n in book) if (book[n] === addr) return n; return ''; };
   function applyLang() { const e = $('nsNavLabel'); if (e) e.textContent = L().action; const t = $('slotAppsTitle'); if (t) t.textContent = L().appsTitle; if (document.querySelector('#page-ns.active')) open(); }
   function init() { injectCSS(); injectPage(); injectButton(); const lb = $('langBtn'); if (lb) lb.addEventListener('click', () => setTimeout(applyLang, 0)); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();

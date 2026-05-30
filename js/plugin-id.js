@@ -89,8 +89,9 @@
     num.textContent = fmtId(id);
     ad.textContent = a;
     let s = 0; for (const ch of id) s += ch.charCodeAt(0); av.textContent = ['🐕', '🐶', '🦴', '🚀', '🌙', '💎', '🍒', '⭐'][s % 8];
-    const self = await getLS('doge_ns_self', '');
-    if (self) { nm.textContent = self + '.doge'; nm.className = 'id-name'; }
+    const self = await getLS('doge_ns_self', null);
+    const myName = self ? (typeof self === 'string' ? self : (self.address === a ? self.name : '')) : '';
+    if (myName) { nm.textContent = myName + '.doge'; nm.className = 'id-name'; }
     else { nm.textContent = l.unset; nm.className = 'id-name unset'; }
   }
   function applyLang() { const e = $('idNavLabel'); if (e) e.textContent = L().action; const t = $('slotAppsTitle'); if (t) t.textContent = L().appsTitle; if (document.querySelector('#page-id.active')) open(); }
