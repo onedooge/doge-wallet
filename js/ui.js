@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ---- Send page ----
   document.getElementById('btnBackFromSend').addEventListener('click', () => showPage('page-wallet'));
   document.getElementById('btnSendDoge').addEventListener('click', sendDoge);
+  document.getElementById('sendTo').addEventListener('input', updateSendResolved);
   const sendFeeHidden = document.getElementById('sendFee');
   const sendFeeCustom = document.getElementById('sendFeeCustom');
   const sendFeeCustomRow = sendFeeCustom.parentElement;
@@ -122,8 +123,42 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ---- Red packet UI ----
   initRedPacketUI();
 
+  // ---- USD ⇌ DOGE 换算器 ----
+  initConverter();
+
   loadPriceData();
 });
+
+// ===== USD ⇌ DOGE 换算器 =====
+
+function initConverter() {
+  const usd = document.getElementById('convUsd');
+  const doge = document.getElementById('convDoge');
+  if (!usd || !doge) return;
+  usd.addEventListener('input', () => {
+    const p = WalletCore.state.dogePrice || 0;
+    const v = parseFloat(usd.value);
+    doge.value = (p > 0 && !isNaN(v)) ? (v / p).toFixed(2) : '';
+  });
+  doge.addEventListener('input', () => {
+    const p = WalletCore.state.dogePrice || 0;
+    const v = parseFloat(doge.value);
+    usd.value = (p > 0 && !isNaN(v)) ? (v * p).toFixed(4) : '';
+  });
+  usd.value = '1'; // 默认 1 USD 起算
+}
+
+function refreshConverter() {
+  const usd = document.getElementById('convUsd');
+  const doge = document.getElementById('convDoge');
+  const priceEl = document.getElementById('convPrice');
+  const p = WalletCore.state.dogePrice || 0;
+  if (priceEl) priceEl.textContent = p > 0 ? ('1 DOGE ≈ $' + p.toFixed(5)) : '—';
+  if (usd && doge && p > 0) {
+    const v = parseFloat(usd.value);
+    if (!isNaN(v)) doge.value = (v / p).toFixed(2);
+  }
+}
 
 // ===== PAGE NAVIGATION =====
 
@@ -330,15 +365,81 @@ function renderTransactions(txs) {
 
 // ===== SEND =====
 
+// 收款方解析:支持 DOGE 地址 / Doge 号(12位) / name.doge —— 全部本地解析,无需服务器
+function _deriveDogeId(addr) {
+  if (!addr) return '';
+  let h = 0;
+  for (let i = 0; i < addr.length; i++) h = (h * 131 + addr.charCodeAt(i)) % 1000000000000;
+  return String(h).padStart(12, '0');
+}
+function _getLS(key, def) {
+  return new Promise(r => chrome.storage.local.get([key], d => r(d[key] === undefined ? def : d[key])));
+}
+// 返回 { address, label } 或 null
+async function resolveRecipient(input) {
+  const s = (input || '').trim();
+  if (!s) return null;
+  // 1) DOGE 地址(D 开头,Base58)
+  if (/^D[1-9A-HJ-NP-Za-km-z]{25,40}$/.test(s)) return { address: s, label: '' };
+
+  const book = await _getLS('doge_ns_book', {});           // .doge 名册(.doge 应用维护)
+  const contacts = await _getLS('doge_chat_contacts', []);  // 聊天好友
+  const cList = Array.isArray(contacts) ? contacts : [];
+
+  // 2) name.doge 域名
+  const name = s.toLowerCase().replace(/\.doge$/, '');
+  if (/^[a-z0-9]{3,15}$/.test(name)) {
+    if (book[name]) return { address: book[name], label: name + '.doge' };
+    const byName = cList.find(c => (c.dogeName || '').toLowerCase() === name);
+    if (byName && byName.address && byName.address !== 'demo') return { address: byName.address, label: name + '.doge' };
+  }
+
+  // 3) Doge 号(12 位,允许空格)—— 只能匹配本地已知地址(哈希不可逆,陌生号需联网)
+  const digits = s.replace(/\s+/g, '');
+  if (/^\d{12}$/.test(digits)) {
+    const addrs = new Set();
+    if (WalletCore.state.address) addrs.add(WalletCore.state.address);
+    Object.values(book).forEach(a => a && addrs.add(a));
+    cList.forEach(c => { if (c.address && c.address !== 'demo') addrs.add(c.address); });
+    for (const a of addrs) if (_deriveDogeId(a) === digits) return { address: a, label: digits };
+  }
+  return null;
+}
+
+// 输入时实时显示解析结果
+async function updateSendResolved() {
+  const el = document.getElementById('sendResolved');
+  if (!el) return;
+  const raw = document.getElementById('sendTo').value.trim();
+  if (!raw) { el.textContent = ''; return; }
+  // 已经是地址就不提示
+  if (/^D[1-9A-HJ-NP-Za-km-z]{25,40}$/.test(raw)) { el.textContent = ''; return; }
+  const r = await resolveRecipient(raw);
+  if (r) {
+    el.style.color = 'var(--success)';
+    el.textContent = '→ ' + r.address.slice(0, 14) + '…' + r.address.slice(-6) + (r.label ? ' (' + r.label + ')' : '');
+  } else {
+    el.style.color = 'var(--danger)';
+    el.textContent = I18n.t('send_resolve_none');
+  }
+}
+
 async function sendDoge() {
-  const to = document.getElementById('sendTo').value.trim();
+  const raw = document.getElementById('sendTo').value.trim();
   const amount = document.getElementById('sendAmount').value;
   const fee = document.getElementById('sendFee').value;
 
-  if (!to || !amount) {
+  if (!raw || !amount) {
     showToast(I18n.t('toast_need_addr_amt'), true);
     return;
   }
+
+  const r = await resolveRecipient(raw);
+  if (!r) {
+    showToast(I18n.t('toast_resolve_fail'), true);
+    return;
+  }
+  const to = r.address;
 
   showToast(I18n.t('toast_sending'), false, 3000);
 
@@ -403,6 +504,7 @@ async function loadPriceData() {
     const usdEl = document.getElementById('balanceUsd');
     if (usdEl) usdEl.textContent = (balance * state.dogePrice).toFixed(2);
   }
+  refreshConverter();
 }
 
 // ===== REFRESH =====
