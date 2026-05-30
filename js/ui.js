@@ -126,6 +126,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ---- USD ⇌ DOGE 换算器 ----
   initConverter();
 
+  // ---- 顶部身份条 ----
+  const idStripNameRow = document.getElementById('idStripNameRow');
+  const idStripIdRow = document.getElementById('idStripIdRow');
+  if (idStripNameRow) idStripNameRow.addEventListener('click', () => { if (window.openDogeNs) window.openDogeNs(); });
+  if (idStripIdRow) idStripIdRow.addEventListener('click', async () => {
+    const addr = WalletCore.state.address; if (!addr) return;
+    try { await navigator.clipboard.writeText(_deriveDogeId(addr)); showToast(I18n.t('idstrip_id_copied')); } catch (e) {}
+  });
+
   loadPriceData();
 });
 
@@ -335,6 +344,23 @@ function updateWalletUI() {
 
   // Transactions
   renderTransactions(state.transactions);
+
+  // 顶部身份条:.doge 名字 + Doge 号
+  renderIdentityStrip();
+}
+
+// 首页顶部身份条:显示绑定到本钱包的 .doge 名字 + 12 位 Doge 号
+async function renderIdentityStrip() {
+  const nameEl = document.getElementById('idStripName');
+  const idEl = document.getElementById('idStripId');
+  if (!nameEl || !idEl) return;
+  const addr = WalletCore.state.address || '';
+  if (!addr) { nameEl.textContent = '—'; nameEl.className = 'ids-val unset'; idEl.textContent = '—'; return; }
+  idEl.textContent = _deriveDogeId(addr).replace(/(\d{3})(?=\d)/g, '$1 ');
+  const self = await _getLS('doge_ns_self', null);
+  const name = self ? (typeof self === 'string' ? self : (self.address === addr ? self.name : '')) : '';
+  if (name) { nameEl.textContent = name + '.doge'; nameEl.className = 'ids-val'; }
+  else { nameEl.textContent = I18n.t('idstrip_unnamed'); nameEl.className = 'ids-val unset'; }
 }
 
 function renderTransactions(txs) {
