@@ -120,8 +120,9 @@
   /* 应用区(插件按需创建) */
   .app-section { margin:0 16px 14px; padding:12px 14px 14px; background:var(--bg-card-soft); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); }
   .app-section-title { font-size:12px; font-weight:800; color:var(--doge-deep); letter-spacing:.5px; margin-bottom:10px; }
-  .app-grid { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
-  .app-grid .action-btn { width:92px; }
+  .app-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+  .app-grid .action-btn { width:auto; padding:12px 2px 10px; }
+  .app-grid .action-btn .label { font-size:10px; white-space:nowrap; }
   `;
 
   /* ===================== 状态/交互 ===================== */

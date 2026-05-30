@@ -87,8 +87,9 @@
   /* 应用区(插件按需创建,与老虎机共用) */
   .app-section { margin:0 16px 14px; padding:12px 14px 14px; background:var(--bg-card-soft); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); }
   .app-section-title { font-size:12px; font-weight:800; color:var(--doge-deep); letter-spacing:.5px; margin-bottom:10px; }
-  .app-grid { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
-  .app-grid .action-btn { width:92px; }
+  .app-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+  .app-grid .action-btn { width:auto; padding:12px 2px 10px; }
+  .app-grid .action-btn .label { font-size:10px; white-space:nowrap; }
   /* Chat 通用 */
   .ch-wrap { padding:0 0 10px; }
   .ch-header { position:relative; background:linear-gradient(135deg,var(--doge-bright),var(--doge-orange)); padding:9px 20px 7px; text-align:center; border-bottom:2px solid var(--doge-gold); }
