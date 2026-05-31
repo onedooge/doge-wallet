@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('unlockPwd').addEventListener('keydown', e => { if (e.key === 'Enter') unlockWallet(); });
 
   // ---- Main wallet page ----
-  document.getElementById('copyAddrBtn').addEventListener('click', copyAddress);
+  document.getElementById('idStripAddrRow').addEventListener('click', copyAddress);
   document.getElementById('btnGoSend').addEventListener('click', () => showPage('page-send'));
   document.getElementById('btnGoReceive').addEventListener('click', () => showPage('page-receive'));
   document.getElementById('btnRefresh').addEventListener('click', refreshBalance);

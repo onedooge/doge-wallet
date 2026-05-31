@@ -374,6 +374,7 @@
     .ids-ic { font-size: 14px; flex: 0 0 auto; }
     .ids-val { flex: 1; font-size: 13px; font-weight: 700; color: var(--doge-brown); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .ids-val.mono { font-family: 'Consolas', monospace; letter-spacing: 1.5px; }
+    .ids-val.addr { font-size: 10px; letter-spacing: 0; font-weight: 600; color: var(--doge-deep); }
     .ids-val.unset { color: var(--text-muted); font-weight: 600; font-size: 12px; }
     .ids-act { flex: 0 0 auto; font-size: 12px; color: var(--doge-orange); }
 
@@ -1495,6 +1496,9 @@
         <div class="id-strip-row" id="idStripIdRow">
           <span class="ids-ic">🆔</span><span class="ids-val mono" id="idStripId">—</span><span class="ids-act">📋</span>
         </div>
+        <div class="id-strip-row" id="idStripAddrRow">
+          <span class="ids-ic">📭</span><span class="ids-val mono addr" id="walletAddress">—</span><span class="ids-act" id="copyAddrBtn" data-i18n="wallet_copy">📋</span>
+        </div>
       </div>
 
       <div class="home-top">
@@ -1518,11 +1522,6 @@
           <div class="conv-row"><input type="number" id="convDoge" inputmode="decimal" placeholder="0" /><span class="u">DOGE</span></div>
           <div class="conv-price" id="convPrice">—</div>
         </div>
-      </div>
-
-      <div class="address-strip">
-        <span class="address-text" id="walletAddress" data-i18n="wallet_address_loading">加载中...</span>
-        <button class="copy-btn" id="copyAddrBtn" data-i18n="wallet_copy">复制</button>
       </div>
 
       <div class="action-grid">
@@ -1803,7 +1802,7 @@
       </div>
 
       <div style="text-align:center;font-size:10px;color:var(--text-muted);margin-top:16px">
-        <span data-i18n="settings_footer_l1">DOGE Wallet v1.0.0</span><br>
+        <span data-i18n="settings_footer_l1">DOGE Wallet v1.0.4</span><br>
         <span data-i18n="settings_footer_l2">Much Open Source. Very Trustworthy. Wow. 🐕</span>
       </div>
     </div>

@@ -165,7 +165,7 @@ const I18N = {
     settings_export_seed: '📦 加密导出助记词',
     settings_lock: '🔒 锁定钱包',
     settings_reset: '⚠️ 重置钱包',
-    settings_footer_l1: 'DOGE Wallet v1.0.3',
+    settings_footer_l1: 'DOGE Wallet v1.0.4',
     settings_footer_l2: 'Much Open Source. Very Trustworthy. Wow. 🐕',
 
     // ── Dialogs / Toasts ──
@@ -404,7 +404,7 @@ const I18N = {
     settings_export_seed: '📦 Export Encrypted Backup',
     settings_lock: '🔒 Lock Wallet',
     settings_reset: '⚠️ Reset Wallet',
-    settings_footer_l1: 'DOGE Wallet v1.0.3',
+    settings_footer_l1: 'DOGE Wallet v1.0.4',
     settings_footer_l2: 'Much Open Source. Very Trustworthy. Wow. 🐕',
 
     // ── Dialogs / Toasts ──
